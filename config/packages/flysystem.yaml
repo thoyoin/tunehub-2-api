@@ -1,0 +1,8 @@
+flysystem:
+    storages:
+        minio.storage:
+            adapter: 'aws'
+            public_url: '%env(AWS_PUBLIC_ENDPOINT)%'
+            options:
+                client: 'Aws\S3\S3Client'
+                bucket: '%env(AWS_BUCKET)%'

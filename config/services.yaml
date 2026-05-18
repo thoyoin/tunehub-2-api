@@ -1,23 +1,39 @@
-# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
-
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-# See also https://symfony.com/doc/current/service_container/import.html
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    media.default_profile_picture: '%env(DEFAULT_PROFILE_PICTURE)%'
+    media.default_cover: '%env(DEFAULT_COVER)%'
+    app.refresh_token_secret: '%env(REFRESH_TOKEN_SECRET)%'
 
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Infrastructure\Service\RefreshTokenService:
+        arguments:
+            $refreshSecret: '%app.refresh_token_secret%'
+
+    League\Flysystem\FilesystemOperator $storage:
+        alias: 'flysystem.default.storage'
+
+    App\Infrastructure\Service\MinioService:
+        arguments:
+            $bucket: '%env(AWS_BUCKET)%'
+            $publicEndpoint: '%env(AWS_PUBLIC_ENDPOINT)%'
+            $endpoint: '%env(AWS_ENDPOINT)%'
+            $accessKey: '%env(AWS_ACCESS_KEY_ID)%'
+            $secretKey: '%env(AWS_SECRET_ACCESS_KEY)%'
+            $region: '%env(AWS_DEFAULT_REGION)%'
+
+    Aws\S3\S3Client:
+        arguments:
+            - version: 'latest'
+              region: '%env(AWS_DEFAULT_REGION)%'
+              endpoint: '%env(AWS_ENDPOINT)%'
+              use_path_style_endpoint: true
+              credentials:
+                  key: '%env(AWS_ACCESS_KEY_ID)%'
+                  secret: '%env(AWS_SECRET_ACCESS_KEY)%'
+

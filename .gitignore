@@ -1,10 +1,56 @@
 
+.idea/
+.vscode/
+*.code-workspace
+
 ###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
 /.env.*.local
+/.env
+/.env.*
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
+
+storage/*.key
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/app/*
+!storage/app/.gitignore
+
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+
+coverage/
+.phpunit.result.cache
+
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+docker-data/
+*.pid
+*.sock
+
+public/build/
+public/hot
+
+*.zip
+*.tar
+*.gz
+*.rar
 ###< symfony/framework-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
