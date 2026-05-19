@@ -14,7 +14,7 @@ class Release
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'releases')]
     #[ORM\JoinColumn(nullable: false)]
@@ -49,7 +49,7 @@ class Release
         $this->tracks = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -66,7 +66,7 @@ class Release
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -78,7 +78,7 @@ class Release
         return $this;
     }
 
-    public function getReleaseType(): ?string
+    public function getReleaseType(): string
     {
         return $this->releaseType;
     }
@@ -90,7 +90,7 @@ class Release
         return $this;
     }
 
-    public function getCoverUrl(): ?string
+    public function getCoverUrl(): string
     {
         return $this->coverUrl;
     }
@@ -114,7 +114,7 @@ class Release
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }

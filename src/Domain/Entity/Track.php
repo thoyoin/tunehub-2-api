@@ -12,7 +12,7 @@ class Track
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'release')]
     #[ORM\JoinColumn(nullable: false)]
@@ -44,7 +44,7 @@ class Track
     #[ORM\Column]
     private int $position;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -85,7 +85,7 @@ class Track
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -97,7 +97,7 @@ class Track
         return $this;
     }
 
-    public function getCoverUrl(): ?string
+    public function getCoverUrl(): string
     {
         return $this->cover_url;
     }
@@ -109,7 +109,7 @@ class Track
         return $this;
     }
 
-    public function getDuration(): ?int
+    public function getDuration(): int
     {
         return $this->duration;
     }
@@ -121,7 +121,7 @@ class Track
         return $this;
     }
 
-    public function getAudioUrl(): ?string
+    public function getAudioUrl(): string
     {
         return $this->audio_url;
     }
@@ -145,7 +145,7 @@ class Track
         return $this;
     }
 
-    public function getPosition(): ?int
+    public function getPosition(): int
     {
         return $this->position;
     }
@@ -159,7 +159,7 @@ class Track
 
     public function getFormattedDuration(): string
     {
-        $minutes = floor($this->duration / 60);
+        $minutes = (int) floor($this->duration / 60);
 
         $seconds = $this->duration % 60;
 

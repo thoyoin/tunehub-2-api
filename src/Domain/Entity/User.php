@@ -20,7 +20,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255, unique: true)]
     private string $username;
@@ -81,7 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
         }
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -251,18 +251,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
         if (!$this->libraryItems->contains($libraryItem)) {
             $this->libraryItems->add($libraryItem);
             $libraryItem->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLibraryItem(LibraryItem $libraryItem): static
-    {
-        if ($this->libraryItems->removeElement($libraryItem)) {
-            // set the owning side to null (unless already changed)
-            if ($libraryItem->getUser() === $this) {
-                $libraryItem->setUser(null);
-            }
         }
 
         return $this;

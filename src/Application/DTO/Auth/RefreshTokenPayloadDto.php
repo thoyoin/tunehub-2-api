@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\DTO\Auth;
 
-class RefreshTokenPayloadDto
+final readonly class RefreshTokenPayloadDto
 {
     public function __construct(
         private int $sub,

@@ -14,6 +14,7 @@ use App\Application\CommandHandler\Playlist\UpdatePlaylistCommandHandler;
 use App\Application\CommandHandler\Playlist\UpdatePlaylistVisibilityCommandHandler;
 use App\Application\Query\Playlist\GetPlaylistByIdQuery;
 use App\Application\QueryHandler\Playlist\GetPlaylistByIdQueryHandler;
+use App\Domain\Entity\User;
 use App\Domain\ValueObject\PlaylistVisibility;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -27,8 +28,14 @@ class PlaylistController extends AbstractController
     #[Route('/api/playlist', name: 'playlist', methods: ['POST'])]
     public function store(CreatePlaylistCommandHandler $handler): JsonResponse
     {
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
         return $this->json([
-            'libraryItem' => $handler(new CreatePlaylistCommand($this->getUser()->getId())),
+            'libraryItem' => $handler(new CreatePlaylistCommand($user->getId())),
         ]);
     }
 
@@ -43,7 +50,11 @@ class PlaylistController extends AbstractController
     #[Route('/api/playlist/{id}', name: 'playlist_destroy', methods: ['DELETE'])]
     public function destroy(int $id, DeletePlaylistCommandHandler $handler): JsonResponse
     {
-        return $this->json($handler(new DeletePlaylistCommand($id)));
+        $handler(new DeletePlaylistCommand($id));
+
+        return $this->json([
+            'message' => 'Playlist successfully deleted'
+        ]);
     }
 
     #[Route('/api/playlist/{id}', name: 'playlist_update_visibility', methods: ['PATCH'])]

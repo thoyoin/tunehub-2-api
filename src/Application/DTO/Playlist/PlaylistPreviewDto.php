@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Application\DTO\Playlist;
 
+use App\Application\DTO\Track\TrackDto;
 use DateTimeImmutable;
 
 final readonly class PlaylistPreviewDto
 {
+
+    /**
+     * @param array<int, TrackDto> $tracks
+     */
     public function __construct(
         private int $id,
         private string $title,
@@ -49,6 +54,9 @@ final readonly class PlaylistPreviewDto
         return $this->createdAt;
     }
 
+    /**
+     * @return TrackDto[]
+     */
     public function getTracks(): array
     {
         return $this->tracks;
