@@ -24,13 +24,13 @@ final readonly class CreateUserCommandHandler
     {
         $user = new User();
 
-        $user->setEmail($command->email);
-        $user->setUsername($command->username);
+        $user->setEmail($command->getEmail());
+        $user->setUsername($command->getUsername());
         $user->setProfilePicture($this->defaultProfilePicture);
 
         $hashedPassword = $this->passwordHasher
             ->hashPassword(
-                $user, $command->password
+                $user, $command->getPassword()
             );
 
         $user->setPassword($hashedPassword);

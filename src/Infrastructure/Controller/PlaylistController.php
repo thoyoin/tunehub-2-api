@@ -16,10 +16,12 @@ use App\Application\Query\Playlist\GetPlaylistByIdQuery;
 use App\Application\QueryHandler\Playlist\GetPlaylistByIdQueryHandler;
 use App\Domain\Entity\User;
 use App\Domain\ValueObject\PlaylistVisibility;
+use App\Infrastructure\Request\Playlist\UpdatePlaylistRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Attribute\MapUploadedFile;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -79,16 +81,14 @@ class PlaylistController extends AbstractController
         int $id,
         #[MapUploadedFile] ?UploadedFile $cover,
         UpdatePlaylistCommandHandler $handler,
-        Request $request
+        #[MapRequestPayload] UpdatePlaylistRequest $request
     ): JsonResponse
     {
-        $data = $request->toArray();
-
         return $this->json($handler(
             new UpdatePlaylistCommand(
                 $id,
-                $data['title'],
-                $data['description'],
+                $request->title,
+                $request->description,
                 $cover,
             )
         ));

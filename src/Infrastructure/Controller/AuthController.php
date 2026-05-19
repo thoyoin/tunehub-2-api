@@ -5,6 +5,7 @@ namespace App\Infrastructure\Controller;
 use App\Application\Command\User\CreateUserCommand;
 use App\Application\CommandHandler\User\CreateUserCommandHandler;
 use App\Application\CommandHandler\User\RefreshAuthTokenCommandHandler;
+use App\Infrastructure\Request\User\CreateUserRequest;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -22,11 +23,16 @@ final class AuthController extends AbstractController
 
     #[Route('/api/register', name: 'app_auth', methods: ['POST'])]
     public function signUp(
-        #[MapRequestPayload] CreateUserCommand $command,
+        #[MapRequestPayload] CreateUserRequest $request,
         CreateUserCommandHandler $handler,
     ): JsonResponse
     {
-        $user = $handler->handle($command);
+        $user = $handler->handle(new CreateUserCommand(
+            username: $request->username,
+            email: $request->email,
+            password: $request->password,
+            passwordConfirmation: $request->passwordConfirmation
+        ));
 
         $token = $this->jwtManager->create($user);
 
