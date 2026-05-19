@@ -56,7 +56,7 @@ final class AuthController extends AbstractController
 
         $response = $this->json([
             'token' => $result->getAccessToken(),
-            'user' => $result->getUser(),
+            'user' => $result->getUser()->jsonSerialize(),
         ]);
 
         $response->headers->setCookie(
