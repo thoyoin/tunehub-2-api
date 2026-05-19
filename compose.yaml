@@ -54,6 +54,8 @@ services:
       MINIO_ROOT_PASSWORD: '${AWS_SECRET_ACCESS_KEY}'
     volumes:
       - minio_data:/data
+    networks:
+      - tunehub_symfony
 
   redis:
     image: redis:7-alpine
