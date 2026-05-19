@@ -18,24 +18,24 @@ final readonly class CreateUserCommand
         public string $email,
 
         #[Assert\NotBlank]
-//        #[Assert\Length(min: 8, max: 255)]
-//        #[Assert\NotCompromisedPassword]
-//        #[Assert\Regex(
-//            pattern: '/[A-Z]/',
-//            message: 'Password must contain at least one uppercase letter.'
-//        )]
-//        #[Assert\Regex(
-//            pattern: '/[a-z]/',
-//            message: 'Password must contain at least one lowercase letter.'
-//        )]
-//        #[Assert\Regex(
-//            pattern: '/\d/',
-//            message: 'Password must contain at least one number.'
-//        )]
-//        #[Assert\Regex(
-//            pattern: '/[\W_]/',
-//            message: 'Password must contain at least one symbol.'
-//        )]
+        #[Assert\Length(min: 8, max: 255)]
+        #[Assert\NotCompromisedPassword]
+        #[Assert\Regex(
+            pattern: '/[A-Z]/',
+            message: 'Password must contain at least one uppercase letter.'
+        )]
+        #[Assert\Regex(
+            pattern: '/[a-z]/',
+            message: 'Password must contain at least one lowercase letter.'
+        )]
+        #[Assert\Regex(
+            pattern: '/\d/',
+            message: 'Password must contain at least one number.'
+        )]
+        #[Assert\Regex(
+            pattern: '/[\W_]/',
+            message: 'Password must contain at least one symbol.'
+        )]
         public string $password,
 
         #[Assert\NotBlank]

@@ -233,7 +233,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
             'username' => $this->getUsername(),
             'slug' => $this->getSlug(),
             'email' => $this->getEmail(),
-            'profile_picture' => $this->getProfilePicture(),
+            'profilePicture' => $this->getProfilePicture(),
             'role' => $this->getRole()->value,
         ];
     }
