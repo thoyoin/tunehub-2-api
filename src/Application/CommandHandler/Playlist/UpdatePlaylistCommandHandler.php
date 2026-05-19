@@ -22,25 +22,25 @@ final readonly class UpdatePlaylistCommandHandler
 
     public function __invoke(UpdatePlaylistCommand $command): void
     {
-        $playlist = $this->playlistRepository->find($command->playlistId);
+        $playlist = $this->playlistRepository->find($command->getPlaylistId());
 
         if (!$playlist instanceof Playlist) {
             throw new \DomainException('Playlist not found');
         }
 
-        $playlist->setTitle($command->title);
-        $playlist->setDescription($command->description);
+        $playlist->setTitle($command->getTitle());
+        $playlist->setDescription($command->getDescription());
 
-        if ($command->cover instanceof UploadedFile) {
+        if ($command->getCover() instanceof UploadedFile) {
             $fileName = sprintf(
                 'cover_%s.%s',
                 bin2hex(random_bytes(16)),
-                $command->cover->guessExtension()
+                $command->getCover()->guessExtension()
             );
 
             $filePath = 'covers/' . $fileName;
 
-            $stream = fopen($command->cover->getPathname(), 'r');
+            $stream = fopen($command->getCover()->getPathname(), 'r');
 
             $this->minioStorage->writeStream($filePath, $stream);
 
