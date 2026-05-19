@@ -18,7 +18,7 @@ final readonly class PlaylistDto
         private int $id,
         private string $title,
         private string $slug,
-        private string $description,
+        private ?string $description,
         private string $coverUrl,
         private string $itemType,
         private UserDto $owner,
