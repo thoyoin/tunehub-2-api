@@ -4,12 +4,10 @@ namespace App\Infrastructure\Controller;
 
 use App\Application\Command\User\UpdateUserCommand;
 use App\Application\CommandHandler\User\UpdateUserCommandHandler;
-use App\Domain\Entity\Playlist;
 use App\Domain\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class UserController extends AbstractController
@@ -24,7 +22,7 @@ final class UserController extends AbstractController
         }
 
         return $this->json([
-            'user' => $user->jsonSerialize(),
+            'user' => $user,
         ]);
     }
 
