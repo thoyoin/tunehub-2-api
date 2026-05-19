@@ -14,10 +14,10 @@ class UpdatePlaylistCommand
         public ?int $playlistId,
 
         #[Assert\Length(max:255)]
-        public ?string $title = null,
+        public string $title = '',
 
         #[Assert\Length(max: 255)]
-        public ?string $description = null,
+        public string $description = '',
 
         #[Assert\File(
             maxSize: '5M',

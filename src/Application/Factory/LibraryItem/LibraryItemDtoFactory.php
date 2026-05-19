@@ -10,6 +10,8 @@ use App\Application\DTO\Release\ReleaseDto;
 use App\Application\Factory\Playlist\PlaylistDtoFactory;
 use App\Application\Factory\Release\ReleaseDtoFactory;
 use App\Domain\Entity\LibraryItem;
+use App\Domain\Entity\Playlist;
+use App\Domain\Entity\Release;
 use App\Domain\ValueObject\LibraryItemType;
 
 readonly class LibraryItemDtoFactory
@@ -32,11 +34,15 @@ readonly class LibraryItemDtoFactory
     public function resolveType(LibraryItem $libraryItem): PlaylistDto|ReleaseDto
     {
         if ($libraryItem->getItemType() === LibraryItemType::Playlist) {
-            return $this->playlistDtoFactory->create($libraryItem->getPlaylist());
+            if ($libraryItem->getPlaylist() instanceof Playlist) {
+                return $this->playlistDtoFactory->create($libraryItem->getPlaylist());
+            }
         }
 
         if ($libraryItem->getItemType() === LibraryItemType::Release) {
-            return $this->releaseDtoFactory->create($libraryItem->getRelease());
+            if ($libraryItem->getRelease() instanceof Release) {
+                return $this->releaseDtoFactory->create($libraryItem->getRelease());
+            }
         }
 
         throw new \RuntimeException('Library item type not supported');

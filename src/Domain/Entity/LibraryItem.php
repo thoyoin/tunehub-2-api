@@ -12,14 +12,14 @@ class LibraryItem
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'libraryItems')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private User $user;
 
     #[ORM\Column(enumType: LibraryItemType::class)]
-    private ?LibraryItemType $itemType = null;
+    private LibraryItemType $itemType;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
@@ -29,24 +29,24 @@ class LibraryItem
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Release $release = null;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(User $user): static
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getItemType(): ?LibraryItemType
+    public function getItemType(): LibraryItemType
     {
         return $this->itemType;
     }
@@ -63,7 +63,7 @@ class LibraryItem
         return $this->playlist;
     }
 
-    public function setPlaylist(?Playlist $playlist): static
+    public function setPlaylist(Playlist $playlist): static
     {
         $this->playlist = $playlist;
         $this->release = null;
@@ -77,7 +77,7 @@ class LibraryItem
         return $this->release;
     }
 
-    public function setRelease(?Release $release): static
+    public function setRelease(Release $release): static
     {
         $this->release = $release;
         $this->playlist = null;
