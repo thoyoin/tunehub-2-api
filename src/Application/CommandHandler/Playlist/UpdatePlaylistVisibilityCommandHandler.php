@@ -20,13 +20,16 @@ final readonly class UpdatePlaylistVisibilityCommandHandler
 
     public function __invoke(UpdatePlaylistVisibilityCommand $command): PlaylistVisibility
     {
-        $playlist = $this->playlistRepository->find($command->playlistId);
+        $playlist = $this->playlistRepository->findOneBy([
+            'id' => $command->getPlaylistId(),
+            'owner' => $command->getCurrentUser(),
+        ]);
 
         if (!$playlist instanceof Playlist) {
             throw new \DomainException('Playlist not found');
         }
 
-        $playlist->setVisibility($command->visibility);
+        $playlist->setVisibility($command->getVisibility());
 
         $this->entityManager->flush();
 

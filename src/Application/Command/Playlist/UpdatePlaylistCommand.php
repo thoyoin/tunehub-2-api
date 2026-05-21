@@ -10,6 +10,7 @@ final readonly class UpdatePlaylistCommand
 {
     public function __construct(
         private ?int $playlistId,
+        private ?int $currentUser,
         private string $title = '',
         private string $description = '',
         private ?UploadedFile $cover = null,
@@ -19,6 +20,11 @@ final readonly class UpdatePlaylistCommand
     public function getPlaylistId(): ?int
     {
         return $this->playlistId;
+    }
+
+    public function getCurrentUser(): ?int
+    {
+        return $this->currentUser;
     }
 
     public function getTitle(): ?string

@@ -40,7 +40,7 @@ final class UserController extends AbstractController
         }
 
         return $this->json($handler(new UpdateUserCommand(
-            $request->userId,
+            $user->getId(),
             $request->username,
             $request->email,
             $request->profilePicture,
