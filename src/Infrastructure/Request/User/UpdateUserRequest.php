@@ -10,9 +10,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 final readonly class UpdateUserRequest
 {
     public function __construct(
-        #[Assert\NotBlank]
-        public ?string $userId = null,
-
         #[Assert\Length(min:1, max: 50)]
         public ?string $username = null,
 

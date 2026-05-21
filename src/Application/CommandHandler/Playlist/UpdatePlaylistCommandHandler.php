@@ -22,7 +22,10 @@ final readonly class UpdatePlaylistCommandHandler
 
     public function __invoke(UpdatePlaylistCommand $command): void
     {
-        $playlist = $this->playlistRepository->find($command->getPlaylistId());
+        $playlist = $this->playlistRepository->findOneBy([
+            'id' => $command->getPlaylistId(),
+            'owner' => $command->getCurrentUser(),
+        ]);
 
         if (!$playlist instanceof Playlist) {
             throw new \DomainException('Playlist not found');

@@ -14,9 +14,11 @@ use App\Application\CommandHandler\Playlist\UpdatePlaylistCommandHandler;
 use App\Application\CommandHandler\Playlist\UpdatePlaylistVisibilityCommandHandler;
 use App\Application\Query\Playlist\GetPlaylistByIdQuery;
 use App\Application\QueryHandler\Playlist\GetPlaylistByIdQueryHandler;
+use App\Domain\Entity\Playlist;
 use App\Domain\Entity\User;
 use App\Domain\ValueObject\PlaylistVisibility;
 use App\Infrastructure\Request\Playlist\UpdatePlaylistRequest;
+use App\Infrastructure\Security\Voter\Playlist\PlaylistVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,17 +44,21 @@ class PlaylistController extends AbstractController
     }
 
     #[Route('/api/playlist/{id}', name: 'playlist_show', methods: ['GET'])]
-    public function show(int $id, GetPlaylistByIdQueryHandler $handler): JsonResponse
+    public function show(Playlist $playlist, GetPlaylistByIdQueryHandler $handler): JsonResponse
     {
+        $this->denyAccessUnlessGranted(PlaylistVoter::VIEW, $playlist);
+
         return $this->json([
-            'playlistItem' => $handler(new GetPlaylistByIdQuery($id))
+            'playlistItem' => $handler(new GetPlaylistByIdQuery($playlist->getId())),
         ]);
     }
 
     #[Route('/api/playlist/{id}', name: 'playlist_destroy', methods: ['DELETE'])]
-    public function destroy(int $id, DeletePlaylistCommandHandler $handler): JsonResponse
+    public function destroy(Playlist $playlist, DeletePlaylistCommandHandler $handler): JsonResponse
     {
-        $handler(new DeletePlaylistCommand($id));
+        $this->denyAccessUnlessGranted(PlaylistVoter::DESTROY, $playlist);
+
+        $handler(new DeletePlaylistCommand($playlist->getId()));
 
         return $this->json([
             'message' => 'Playlist successfully deleted'
@@ -61,15 +67,18 @@ class PlaylistController extends AbstractController
 
     #[Route('/api/playlist/{id}', name: 'playlist_update_visibility', methods: ['PATCH'])]
     public function updateVisibility(
-        int $id,
+        Playlist $playlist,
         UpdatePlaylistVisibilityCommandHandler $handler,
         Request $request,
     ): JsonResponse
     {
+        $this->denyAccessUnlessGranted(PlaylistVoter::EDIT, $playlist);
+
         return $this->json([
             'visibility' => $handler(
                 new UpdatePlaylistVisibilityCommand(
-                    $id,
+                    $playlist->getId(),
+                    $this->getUser()->getId(),
                     PlaylistVisibility::tryFrom($request->toArray()['visibility']),
                 )
             ),
@@ -78,15 +87,18 @@ class PlaylistController extends AbstractController
 
     #[Route('/api/playlist/{id}', name: 'playlist_update', methods: ['PUT'])]
     public function update(
-        int $id,
+        Playlist $playlist,
         #[MapUploadedFile] ?UploadedFile $cover,
+        #[MapRequestPayload] UpdatePlaylistRequest $request,
         UpdatePlaylistCommandHandler $handler,
-        #[MapRequestPayload] UpdatePlaylistRequest $request
     ): JsonResponse
     {
+        $this->denyAccessUnlessGranted(PlaylistVoter::EDIT, $playlist);
+
         return $this->json($handler(
             new UpdatePlaylistCommand(
-                $id,
+                $playlist->getId(),
+                $this->getUser()->getId(),
                 $request->title,
                 $request->description,
                 $cover,

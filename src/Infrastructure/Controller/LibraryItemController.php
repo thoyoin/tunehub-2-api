@@ -8,7 +8,9 @@ use App\Application\Query\LibraryItem\GetLibraryItemByIdQuery;
 use App\Application\Query\LibraryItem\GetLibraryItemsQuery;
 use App\Application\QueryHandler\LibraryItem\GetLibraryItemByIdQueryHandler;
 use App\Application\QueryHandler\LibraryItem\GetLibraryItemsQueryHandler;
+use App\Domain\Entity\LibraryItem;
 use App\Domain\Entity\User;
+use App\Infrastructure\Security\Voter\LibraryItem\LibraryItemVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -30,10 +32,12 @@ class LibraryItemController extends AbstractController
     }
 
     #[Route('/api/libraryItems/{id}', name: 'apiLibraryItem', methods: ['GET'])]
-    public function show(int $id, GetLibraryItemByIdQueryHandler $handler): JsonResponse
+    public function show(LibraryItem $libraryItem, GetLibraryItemByIdQueryHandler $handler): JsonResponse
     {
+        $this->denyAccessUnlessGranted(LibraryItemVoter::VIEW, $libraryItem);
+
         return $this->json([
-            'libraryItem' => $handler(new GetLibraryItemByIdQuery($id)),
+            'libraryItem' => $handler(new GetLibraryItemByIdQuery($libraryItem->getId())),
         ]);
     }
 }
