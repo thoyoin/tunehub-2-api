@@ -30,6 +30,7 @@ jobs:
         env:
             APP_ENV: test
             DATABASE_URL: mysql://root:root@127.0.0.1:3306/tunehub_test?serverVersion=8.0
+            DEFAULT_URI: http://localhost
 
         steps:
             -   uses: actions/checkout@v4
@@ -43,6 +44,7 @@ jobs:
                     APP_ENV=test
                     APP_SECRET=test
                     DATABASE_URL=mysql://root:root@127.0.0.1:3306/tunehub_test?serverVersion=8.0
+                    DEFAULT_URI=http://localhost
                     EOF
 
             -   run: composer install --no-interaction --prefer-dist
