@@ -7,7 +7,6 @@ namespace App\Application\QueryHandler\LibraryItem;
 use App\Application\DTO\LibraryItem\LibraryItemDto;
 use App\Application\Factory\LibraryItem\LibraryItemDtoFactory;
 use App\Application\Query\LibraryItem\GetLibraryItemsQuery;
-use App\Domain\Entity\LibraryItem;
 use App\Infrastructure\Repository\LibraryItemRepository;
 
 final readonly class GetLibraryItemsQueryHandler

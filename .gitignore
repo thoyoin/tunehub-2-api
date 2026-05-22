@@ -54,3 +54,8 @@ public/hot
 Thumbs.db
 *.swp
 *.swo
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###

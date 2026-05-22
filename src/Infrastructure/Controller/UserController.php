@@ -7,9 +7,12 @@ use App\Application\CommandHandler\User\UpdateUserCommandHandler;
 use App\Domain\Entity\User;
 use App\Infrastructure\Request\User\UpdateUserRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\HttpKernel\Attribute\MapUploadedFile;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Constraints as Assert;
 
 final class UserController extends AbstractController
 {
@@ -31,6 +34,19 @@ final class UserController extends AbstractController
     public function update(
         UpdateUserCommandHandler $handler,
         #[MapRequestPayload] UpdateUserRequest $request,
+        #[MapUploadedFile(
+            constraints: [
+                new Assert\Image(
+                    maxSize: '5M',
+                    mimeTypes: [
+                        'image/jpeg',
+                        'image/png',
+                        'image/webp'
+                    ],
+                    mimeTypesMessage: 'Please upload a valid image file.',
+                )
+            ]
+        )] ?UploadedFile $profilePicture = null,
     ): JsonResponse
     {
         $user = $this->getUser();
@@ -43,7 +59,7 @@ final class UserController extends AbstractController
             $user->getId(),
             $request->username,
             $request->email,
-            $request->profilePicture,
+            $profilePicture,
         )));
     }
 }

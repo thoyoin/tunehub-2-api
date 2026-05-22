@@ -14,7 +14,7 @@ class Track
     #[ORM\Column]
     private int $id;
 
-    #[ORM\ManyToOne(inversedBy: 'release')]
+    #[ORM\ManyToOne(inversedBy: 'tracks')]
     #[ORM\JoinColumn(nullable: false)]
     private User $artist;
 

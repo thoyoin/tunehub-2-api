@@ -18,17 +18,6 @@ final readonly class UpdateUserRequest
         )]
         #[Assert\Length(max: 255)]
         public ?string $email = null,
-
-        #[Assert\Image(
-            maxSize: '5M',
-            mimeTypes: [
-                'image/jpeg',
-                'image/png',
-                'image/webp'
-            ],
-            mimeTypesMessage: 'Please upload a valid image file.',
-        )]
-        public ?UploadedFile $profilePicture = null,
     )
     {}
 }

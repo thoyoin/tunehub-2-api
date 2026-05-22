@@ -21,7 +21,7 @@ class JsonLoginFailureHandler implements AuthenticationFailureHandlerInterface
             'message' => 'Invalid credentials.',
             'errors' => [
                 'general' => [
-                    'Invalid email or password.',
+                    'Invalid email or password.'
                 ]
             ]
         ], 401);

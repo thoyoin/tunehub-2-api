@@ -43,7 +43,7 @@ final readonly class PlaylistDto
         return $this->slug;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }

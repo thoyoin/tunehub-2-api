@@ -17,12 +17,35 @@ readonly class MinioService
     public function storeProfilePicture(UploadedFile $file): string
     {
         $fileName = sprintf(
-            'cover_%s.%s',
+            'avatar_%s.%s',
             bin2hex(random_bytes(16)),
             $file->guessExtension()
         );
 
         $filePath = 'profilePictures/' . $fileName;
+
+        $stream = fopen($file->getPathname(), 'r');
+
+        $this->minioStorage->writeStream($filePath, $stream);
+
+        $url = $this->minioStorage->publicUrl($filePath);
+
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
+
+        return $url;
+    }
+
+    public function storeCover(UploadedFile $file): string
+    {
+        $fileName = sprintf(
+            'cover_%s.%s',
+            bin2hex(random_bytes(16)),
+            $file->guessExtension()
+        );
+
+        $filePath = 'covers/' . $fileName;
 
         $stream = fopen($file->getPathname(), 'r');
 
