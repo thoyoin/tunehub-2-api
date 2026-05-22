@@ -16,7 +16,7 @@ services:
             $refreshSecret: '%app.refresh_token_secret%'
 
     League\Flysystem\FilesystemOperator $storage:
-        alias: 'flysystem.default.storage'
+        alias: 'minio.storage'
 
     Aws\S3\S3Client:
         arguments:

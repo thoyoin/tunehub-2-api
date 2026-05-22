@@ -18,6 +18,7 @@
         "nelmio/cors-bundle": "^2.6",
         "phpdocumentor/reflection-docblock": "^6.0",
         "phpstan/phpdoc-parser": "^2.3",
+        "ramsey/uuid": "^4.9",
         "symfony/console": "8.0.*",
         "symfony/dotenv": "8.0.*",
         "symfony/flex": "^2",
@@ -33,14 +34,20 @@
         "symfony/yaml": "8.0.*"
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^8.6",
+        "doctrine/doctrine-fixtures-bundle": "*",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
+        "phpunit/phpunit": "^13.1",
         "spaze/phpstan-disallowed-calls": "^4.12",
-        "symfony/maker-bundle": "^1.67"
+        "symfony/browser-kit": "8.0.*",
+        "symfony/css-selector": "8.0.*",
+        "symfony/maker-bundle": "^1.67",
+        "zenstruck/foundry": "*"
     },
     "config": {
         "allow-plugins": {
@@ -85,7 +92,13 @@
             "@auto-scripts"
         ],
         "stan": "phpstan analyse",
-        "stan-fix": "phpstan analyse --memory-limit=1G"
+        "stan-fix": "phpstan analyse --memory-limit=1G",
+        "check": [
+            "php bin/console lint:container",
+            "php bin/console doctrine:schema:validate",
+            "php bin/console debug:router",
+            "vendor/bin/phpstan analyse"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"

@@ -26,7 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     private string $username;
 
     #[ORM\Column(length: 255, unique: true)]
-    private string $slug = '';
+    private ?string $slug = null;
 
     #[ORM\Column(length: 255, unique: true)]
     private string $email;
@@ -75,7 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     #[ORM\PrePersist]
     public function generateSlug(): void
     {
-        if ($this->slug === '') {
+        if ($this->slug === null || $this->slug === '') {
             $slugger = new AsciiSlugger();
             $this->slug = strtolower($slugger->slug($this->username)->toString());
         }

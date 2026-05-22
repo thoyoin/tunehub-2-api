@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: PlaylistRepository::class)]
@@ -28,8 +29,8 @@ class Playlist
     #[ORM\Column(length: 255)]
     private string $itemType = 'playlist';
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $slug = '';
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    private ?string $slug = null;
 
     #[ORM\ManyToOne(inversedBy: 'playlists')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -63,9 +64,16 @@ class Playlist
     #[ORM\PrePersist]
     public function generateSlug(): void
     {
-        if ($this->slug === null) {
+        if ($this->slug === null || $this->slug === '') {
             $slugger = new AsciiSlugger();
-            $this->slug = strtolower($slugger->slug($this->title)->toString());
+
+            $baseSlug = strtolower($slugger->slug($this->title)->toString());
+
+            $this->slug = sprintf(
+                '%s-%s',
+                $baseSlug,
+                substr(Uuid::uuid4()->toString(), 0, 8),
+            );
         }
     }
 

@@ -18,14 +18,15 @@ use App\Domain\Entity\Playlist;
 use App\Domain\Entity\User;
 use App\Domain\ValueObject\PlaylistVisibility;
 use App\Infrastructure\Request\Playlist\UpdatePlaylistRequest;
+use App\Infrastructure\Request\Playlist\UpdatePlaylistVisibilityRequest;
 use App\Infrastructure\Security\Voter\Playlist\PlaylistVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Attribute\MapUploadedFile;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PlaylistController extends AbstractController
 {
@@ -69,7 +70,7 @@ class PlaylistController extends AbstractController
     public function updateVisibility(
         Playlist $playlist,
         UpdatePlaylistVisibilityCommandHandler $handler,
-        Request $request,
+        #[MapRequestPayload] UpdatePlaylistVisibilityRequest $request,
     ): JsonResponse
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::EDIT, $playlist);
@@ -78,19 +79,23 @@ class PlaylistController extends AbstractController
             'visibility' => $handler(
                 new UpdatePlaylistVisibilityCommand(
                     $playlist->getId(),
-                    $this->getUser()->getId(),
-                    PlaylistVisibility::tryFrom($request->toArray()['visibility']),
+                    PlaylistVisibility::tryFrom($request->visibility),
                 )
             ),
         ]);
     }
 
-    #[Route('/api/playlist/{id}', name: 'playlist_update', methods: ['PUT'])]
+    #[Route('/api/playlist/{id}', name: 'playlist_update', methods: ['POST'])]
     public function update(
         Playlist $playlist,
-        #[MapUploadedFile] ?UploadedFile $cover,
-        #[MapRequestPayload] UpdatePlaylistRequest $request,
         UpdatePlaylistCommandHandler $handler,
+        #[MapRequestPayload] UpdatePlaylistRequest $request,
+        #[MapUploadedFile(
+            new Assert\File(
+                maxSize: '5M',
+                mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+            )
+        )] ?UploadedFile $cover,
     ): JsonResponse
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::EDIT, $playlist);
@@ -98,7 +103,6 @@ class PlaylistController extends AbstractController
         return $this->json($handler(
             new UpdatePlaylistCommand(
                 $playlist->getId(),
-                $this->getUser()->getId(),
                 $request->title,
                 $request->description,
                 $cover,
