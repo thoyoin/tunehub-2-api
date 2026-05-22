@@ -19,13 +19,13 @@ final class Version20260515131123 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE playlist CHANGE slug slug VARCHAR(255) DEFAULT NULL');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_D782112D989D9B62 ON playlist (slug)');
     }
 
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('DROP INDEX UNIQ_D782112D989D9B62 ON playlist');
         $this->addSql('ALTER TABLE playlist CHANGE slug slug VARCHAR(255) NOT NULL');
     }
 }
