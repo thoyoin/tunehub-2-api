@@ -4,6 +4,7 @@ namespace App\Infrastructure\Controller;
 
 use App\Application\Command\User\UpdateUserCommand;
 use App\Application\CommandHandler\User\UpdateUserCommandHandler;
+use App\Application\Factory\User\UserDtoFactory;
 use App\Domain\Entity\User;
 use App\Infrastructure\Request\User\UpdateUserRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +18,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class UserController extends AbstractController
 {
     #[Route('/api/me', name: 'app_user', methods: ['GET'])]
-    public function me(): JsonResponse
+    public function me(
+        UserDtoFactory $dtoFactory,
+    ): JsonResponse
     {
         $user = $this->getUser();
 
@@ -26,7 +29,7 @@ final class UserController extends AbstractController
         }
 
         return $this->json([
-            'user' => $user,
+            'user' => $dtoFactory->create($user),
         ]);
     }
 
@@ -55,11 +58,15 @@ final class UserController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        return $this->json($handler(new UpdateUserCommand(
+        $handler(new UpdateUserCommand(
             $user->getId(),
             $request->username,
             $request->email,
             $profilePicture,
-        )));
+        ));
+
+        return $this->json([
+            'message' => 'User has been updated.',
+        ], 204);
     }
 }

@@ -90,15 +90,4 @@ class LibraryItem
     {
         return $this->itemType === LibraryItemType::Release;
     }
-
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'id' => $this->getId(),
-            'user' => $this->getUser(),
-            'itemType' => $this->getItemType(),
-            'playlist' => $this->getPlaylist(),
-            'release' => $this->getRelease(),
-        ];
-    }
 }

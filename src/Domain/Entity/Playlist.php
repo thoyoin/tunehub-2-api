@@ -51,9 +51,6 @@ class Playlist
     #[ORM\Column(nullable: true)]
     private ?DateTimeImmutable $createdAt;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $itemId = null;
-
     public function __construct()
     {
         $this->tracks = new ArrayCollection();
@@ -166,6 +163,8 @@ class Playlist
     {
         if (!$this->tracks->contains($track)) {
             $this->tracks->add($track);
+
+            $track->setPlaylist($this);
         }
 
         return $this;

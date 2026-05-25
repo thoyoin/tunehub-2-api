@@ -10,10 +10,10 @@ final readonly class UpdatePlaylistRequest
 {
     public function __construct(
         #[Assert\Length(max:255)]
-        public string $title = '',
+        public ?string $title = null,
 
         #[Assert\Length(max: 255)]
-        public string $description = '',
+        public ?string $description = null,
     )
     {}
 }

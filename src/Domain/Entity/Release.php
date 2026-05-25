@@ -41,9 +41,6 @@ class Release
     #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'release')]
     private Collection $tracks;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $itemId = null;
-
     public function __construct()
     {
         $this->tracks = new ArrayCollection();
@@ -142,20 +139,6 @@ class Release
         }
 
         return $this;
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'id' => $this->getId(),
-            'artist' => $this->getArtist(),
-            'title' => $this->getTitle(),
-            'releaseType' => $this->getReleaseType(),
-            'coverUrl' => $this->getCoverUrl(),
-            'releaseDate' => $this->getReleaseDate(),
-            'status' => $this->getStatus(),
-            'tracks' => $this->getTracks()->toArray(),
-        ];
     }
 
     public function getItemId(): ?int
