@@ -29,6 +29,8 @@ jobs:
                     --health-retries=5
         env:
             APP_ENV: test
+            APP_SECRET: test
+            KERNEL_CLASS: App\Kernel
             DATABASE_URL: mysql://root:root@127.0.0.1:3306/tunehub_test?serverVersion=8.0
             DEFAULT_URI: http://localhost
 
