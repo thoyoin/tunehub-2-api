@@ -52,7 +52,7 @@ jobs:
                     DEFAULT_PROFILE_PICTURE=https://localhost:9443/tunehub/defaults/profile_cover.jpg
                     JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
                     JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
-                    REFRESH_TOKEN_SECRET=test_refresh_token_secret
+                    REFRESH_TOKEN_SECRET=this_is_a_long_test_refresh_token_secret_32_chars_minimum
                     JWT_PASSPHRASE=test
                     EOF
 
