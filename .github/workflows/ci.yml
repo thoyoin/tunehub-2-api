@@ -47,7 +47,18 @@ jobs:
                     APP_SECRET=test
                     DATABASE_URL=mysql://root:root@127.0.0.1:3306/tunehub_test?serverVersion=8.0
                     DEFAULT_URI=http://localhost
+                    CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+                    DEFAULT_COVER=defaults/profile_cover.jpg
+                    JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+                    JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+                    JWT_PASSPHRASE=test
                     EOF
+
+            -   name: Generate JWT keys for test environment
+                run: |
+                    mkdir -p config/jwt
+                    openssl genrsa -out config/jwt/private.pem -aes256 -passout pass:test 4096
+                    openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem -passin pass:test
 
             -   run: composer install --no-interaction --prefer-dist
             -   run: php bin/console doctrine:database:create --if-not-exists --env=test
