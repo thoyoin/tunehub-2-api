@@ -53,6 +53,6 @@ jobs:
             -   run: php bin/console lint:container
             -   run: php bin/console doctrine:schema:validate --env=test
             -   run: php bin/console debug:router
-            -   run: php bin/console cache:warmup --env=dev --no-debug
+            -   run: php bin/console cache:warmup --env=dev --debug
             -   run: vendor/bin/phpstan analyse
             -   run: php bin/phpunit
