@@ -7,7 +7,6 @@ use App\Domain\ValueObject\UserRole;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -15,7 +14,7 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -224,18 +223,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
         }
 
         return $this->email;
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'id' => $this->getId(),
-            'username' => $this->getUsername(),
-            'slug' => $this->getSlug(),
-            'email' => $this->getEmail(),
-            'profilePicture' => $this->getProfilePicture(),
-            'role' => $this->getRole()->publicValue(),
-        ];
     }
 
     /**

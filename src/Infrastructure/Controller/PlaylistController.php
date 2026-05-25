@@ -100,13 +100,16 @@ class PlaylistController extends AbstractController
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::EDIT, $playlist);
 
-        return $this->json($handler(
-            new UpdatePlaylistCommand(
-                $playlist->getId(),
-                $request->title,
-                $request->description,
-                $cover,
+        $handler(new UpdatePlaylistCommand(
+            $playlist->getId(),
+            $request->title,
+            $request->description,
+            $cover
             )
-        ));
+        );
+
+        return $this->json([
+            'message' => 'Playlist successfully updated'
+        ], 204);
     }
 }

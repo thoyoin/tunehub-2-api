@@ -15,6 +15,7 @@ final readonly class CreateUserRequest
 
         #[Assert\NotBlank]
         #[Assert\Length(min: 1, max: 255)]
+        #[Assert\Email]
         public string $email,
 
         #[Assert\NotBlank]

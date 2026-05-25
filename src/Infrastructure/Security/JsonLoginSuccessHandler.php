@@ -48,7 +48,7 @@ readonly class JsonLoginSuccessHandler implements AuthenticationSuccessHandlerIn
             Cookie::create('refresh_token')
                 ->withValue($refreshToken)
                 ->withHttpOnly(true)
-                ->withSecure(false)
+                ->withSecure(true)
                 ->withSameSite('lax')
                 ->withPath('/api/token/refresh')
                 ->withExpires(new \DateTimeImmutable('+3 days'))

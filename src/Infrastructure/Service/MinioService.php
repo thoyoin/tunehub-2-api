@@ -49,13 +49,18 @@ readonly class MinioService
 
         $stream = fopen($file->getPathname(), 'r');
 
-        $this->minioStorage->writeStream($filePath, $stream);
+        if ($stream === false) {
+            throw new \RuntimeException('Cannot open uploaded file.');
+        }
 
-        $url = $this->minioStorage->publicUrl($filePath);
+        try {
+            $this->minioStorage->writeStream($filePath, $stream);
 
-        if (is_resource($stream)) {
+            $url = $this->minioStorage->publicUrl($filePath);
+        } finally {
             fclose($stream);
         }
+
 
         return $url;
     }

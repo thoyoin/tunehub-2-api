@@ -15,7 +15,7 @@ final readonly class UserDto implements JsonSerializable
         private string $slug,
         private string $email,
         private string $profilePicture,
-        private UserRole|string $role,
+        private UserRole $role,
     )
     {}
 
@@ -44,7 +44,7 @@ final readonly class UserDto implements JsonSerializable
         return $this->profilePicture;
     }
 
-    public function getRole(): UserRole|string
+    public function getRole(): UserRole
     {
         return $this->role;
     }

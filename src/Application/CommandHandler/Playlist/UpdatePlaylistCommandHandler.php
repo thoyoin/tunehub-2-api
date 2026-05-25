@@ -29,8 +29,13 @@ final readonly class UpdatePlaylistCommandHandler
             throw new \DomainException('Playlist not found');
         }
 
-        $playlist->setTitle($command->getTitle());
-        $playlist->setDescription($command->getDescription());
+        if ($command->getTitle() !== null) {
+            $playlist->setTitle($command->getTitle());
+        }
+
+        if ($command->getDescription() !== null) {
+            $playlist->setDescription($command->getDescription());
+        }
 
         if ($command->getCover() instanceof UploadedFile) {
             $url = $this->minioService->storeCover($command->getCover());
