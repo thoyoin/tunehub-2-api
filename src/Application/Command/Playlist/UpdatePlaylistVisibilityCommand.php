@@ -14,12 +14,12 @@ final readonly class UpdatePlaylistVisibilityCommand
     )
     {}
 
-    public function getPlaylistId(): ?int
+    public function getPlaylistId(): int
     {
         return $this->playlistId;
     }
 
-    public function getVisibility(): PlaylistVisibility
+    public function getVisibility(): ?PlaylistVisibility
     {
         return $this->visibility;
     }

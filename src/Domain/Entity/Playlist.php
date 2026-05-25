@@ -48,8 +48,8 @@ class Playlist
     #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'playlist')]
     private Collection $tracks;
 
-    #[ORM\Column(nullable: true)]
-    private ?DateTimeImmutable $createdAt;
+    #[ORM\Column(nullable: false)]
+    private DateTimeImmutable $createdAt;
 
     public function __construct()
     {
@@ -103,8 +103,12 @@ class Playlist
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
+        if ($this->slug === null) {
+            throw new \LogicException('Playlist slug has not been generated yet.');
+        }
+
         return $this->slug;
     }
 
@@ -196,17 +200,5 @@ class Playlist
         }
 
         return $duration;
-    }
-
-    public function getItemId(): ?int
-    {
-        return $this->itemId;
-    }
-
-    public function setItemId(int $itemId): static
-    {
-        $this->itemId = $itemId;
-
-        return $this;
     }
 }

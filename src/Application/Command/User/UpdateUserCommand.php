@@ -9,14 +9,14 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 final readonly class UpdateUserCommand
 {
     public function __construct(
-        private ?string $id = null,
+        private int $id,
         private ?string $username = null,
         private ?string $email = null,
         private ?UploadedFile $profilePicture = null,
     )
     {}
 
-    public function getId(): ?string
+    public function getId(): int
     {
         return $this->id;
     }

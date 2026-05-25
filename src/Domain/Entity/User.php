@@ -24,7 +24,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, unique: true)]
     private string $username;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $slug = null;
 
     #[ORM\Column(length: 255, unique: true)]
@@ -99,6 +99,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getSlug(): string
     {
+        if ($this->slug === null) {
+            throw new \LogicException('User slug has not been generated yet.');
+        }
+
         return $this->slug;
     }
 

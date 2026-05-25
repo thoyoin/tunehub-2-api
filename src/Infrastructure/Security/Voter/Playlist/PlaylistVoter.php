@@ -3,12 +3,16 @@
 namespace App\Infrastructure\Security\Voter\Playlist;
 
 use App\Domain\Entity\Playlist;
+use App\Domain\Entity\User;
 use App\Domain\ValueObject\PlaylistVisibility;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @extends Voter<string, Playlist>
+ */
 final class PlaylistVoter extends Voter
 {
     public const string EDIT = 'PLAYLIST_EDIT';
@@ -17,7 +21,7 @@ final class PlaylistVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::VIEW, self::DESTROY])
+        return in_array($attribute, [self::EDIT, self::VIEW, self::DESTROY], true)
             && $subject instanceof Playlist;
     }
 
@@ -29,7 +33,7 @@ final class PlaylistVoter extends Voter
     ): bool {
         $user = $token->getUser();
 
-        if (!$subject instanceof Playlist) {
+        if (!$user instanceof User) {
             return false;
         }
 
@@ -43,7 +47,7 @@ final class PlaylistVoter extends Voter
 
     public function canDestroy(Playlist $playlist, mixed $user): bool
     {
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof User) {
             return false;
         }
 
@@ -56,7 +60,7 @@ final class PlaylistVoter extends Voter
 
     public function canEdit(Playlist $playlist, mixed $user): bool
     {
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof User) {
             return false;
         }
 
@@ -73,7 +77,7 @@ final class PlaylistVoter extends Voter
             return true;
         }
 
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof User) {
             return false;
         }
 

@@ -140,16 +140,4 @@ class Release
 
         return $this;
     }
-
-    public function getItemId(): ?int
-    {
-        return $this->itemId;
-    }
-
-    public function setItemId(int $itemId): static
-    {
-        $this->itemId = $itemId;
-
-        return $this;
-    }
 }

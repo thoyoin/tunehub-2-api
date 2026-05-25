@@ -10,8 +10,8 @@ final readonly class UpdatePlaylistCommand
 {
     public function __construct(
         private ?int $playlistId,
-        private string $title = '',
-        private string $description = '',
+        private ?string $title = null,
+        private ?string $description = null,
         private ?UploadedFile $cover = null,
     )
     {}
