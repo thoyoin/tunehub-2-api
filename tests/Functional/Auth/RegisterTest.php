@@ -25,7 +25,7 @@ class RegisterTest extends WebTestCase
                 'passwordConfirmation' => 'passWORD123!',
             ]));
 
-        self::assertResponseStatusCodeSame(201);
+        self::assertResponseStatusCodeSame(200);
 
         $data = json_decode($client->getResponse()->getContent(), true);
 

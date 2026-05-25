@@ -53,7 +53,7 @@ class RefreshTokenTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/api/token/refresh',
+            'https://localhost/api/token/refresh',
             server: [
                 'HTTP_ACCEPT' => 'application/json',
             ]
