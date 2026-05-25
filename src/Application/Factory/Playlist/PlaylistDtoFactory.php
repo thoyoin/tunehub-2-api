@@ -10,7 +10,6 @@ use App\Application\DTO\Track\TrackDto;
 use App\Application\Factory\Track\TrackDtoFactory;
 use App\Application\Factory\User\UserDtoFactory;
 use App\Domain\Entity\Playlist;
-use App\Domain\Entity\Track;
 
 final readonly class PlaylistDtoFactory
 {

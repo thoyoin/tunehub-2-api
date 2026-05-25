@@ -26,7 +26,9 @@ final readonly class UpdatePlaylistVisibilityCommandHandler
             throw new \DomainException('Playlist not found');
         }
 
-        $playlist->setVisibility($command->getVisibility());
+        if ($command->getVisibility() instanceof PlaylistVisibility) {
+            $playlist->setVisibility($command->getVisibility());
+        }
 
         $this->entityManager->flush();
 
