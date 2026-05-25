@@ -18,7 +18,8 @@
         <server name="KERNEL_CLASS" value="App\Kernel" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="CORS_ALLOW_ORIGIN" value="^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$" />
-        <server name="DEFAULT_COVER" value="defaults/profile_cover.jpg" />
+        <server name="DEFAULT_COVER" value="http://localhost:9443/tunehub/defaults/default_cover.jpg" />
+        <server name="DEFAULT_PROFILE_PICTURE" value="https://localhost:9443/tunehub/defaults/profile_cover.jpg" />
     </php>
 
     <testsuites>
