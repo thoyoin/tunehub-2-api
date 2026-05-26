@@ -32,4 +32,10 @@ class ReleaseRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    public function delete(Release $release): void
+    {
+        $this->getEntityManager()->remove($release);
+        $this->getEntityManager()->flush();
+    }
 }

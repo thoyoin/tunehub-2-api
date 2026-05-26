@@ -24,9 +24,10 @@ readonly class ReleaseDtoFactory
             id: $release->getId(),
             title: $release->getTitle(),
             artist: $this->userDtoFactory->create($release->getArtist()),
-            release_type: $release->getReleaseType(),
-            cover_url: $release->getCoverUrl(),
-            release_date: $release->getReleaseDate(),
+            releaseType: $release->getReleaseType(),
+            coverUrl: $release->getCoverUrl(),
+            duration: $release->getDuration(),
+            releaseDate: $release->getFormattedReleaseDate(),
             status: $release->getStatus(),
             tracks: $this->createTrackDtos($release),
         );

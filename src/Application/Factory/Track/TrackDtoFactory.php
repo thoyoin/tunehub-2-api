@@ -27,7 +27,7 @@ readonly class TrackDtoFactory
             coverUrl: $track->getCoverUrl(),
             duration: $track->getFormattedDuration(),
             audioUrl: $track->getAudioUrl(),
-            releaseDate: $track->getReleaseDate(),
+            releaseDate: $track->getFormattedReleaseDate(),
             position: $track->getPosition(),
         );
     }
