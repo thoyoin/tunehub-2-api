@@ -4,9 +4,12 @@ namespace App\Tests\Functional\Auth;
 
 use App\Infrastructure\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class RegisterTest extends WebTestCase
 {
+    use ResetDatabase;
+
     public function testUserCanRegister(): void
     {
         $client = static::createClient();

@@ -18,7 +18,7 @@ final readonly class TrackDto
         private string $coverUrl,
         private string $duration,
         private string $audioUrl,
-        private ?\DateTime $releaseDate,
+        private \DateTimeImmutable $releaseDate,
         private int $position,
     )
     {}
@@ -58,7 +58,7 @@ final readonly class TrackDto
         return $this->audioUrl;
     }
 
-    public function getReleaseDate(): ?\DateTime
+    public function getReleaseDate(): \DateTimeImmutable
     {
         return $this->releaseDate;
     }

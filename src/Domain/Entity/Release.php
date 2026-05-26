@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\ValueObject\ReleaseType;
 use App\Infrastructure\Repository\ReleaseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -24,7 +25,7 @@ class Release
     private string $title;
 
     #[ORM\Column(length: 255)]
-    private string $releaseType;
+    private ReleaseType $releaseType;
 
     #[ORM\Column(length: 255)]
     private string $coverUrl;
@@ -38,7 +39,7 @@ class Release
     /**
      * @var Collection<int, Track>
      */
-    #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'release')]
+    #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'release', cascade: ['persist'])]
     private Collection $tracks;
 
     public function __construct()
@@ -59,6 +60,7 @@ class Release
     public function setArtist(User $artist): static
     {
         $this->artist = $artist;
+        $artist->addRelease($this);
 
         return $this;
     }
@@ -75,12 +77,12 @@ class Release
         return $this;
     }
 
-    public function getReleaseType(): string
+    public function getReleaseType(): ReleaseType
     {
         return $this->releaseType;
     }
 
-    public function setReleaseType(string $releaseType): static
+    public function setReleaseType(ReleaseType $releaseType): static
     {
         $this->releaseType = $releaseType;
 
@@ -99,7 +101,7 @@ class Release
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTimeImmutable
+    public function getReleaseDate(): \DateTimeImmutable
     {
         return $this->releaseDate;
     }

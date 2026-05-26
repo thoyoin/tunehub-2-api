@@ -38,8 +38,8 @@ class Track
     #[ORM\Column(length: 255)]
     private string $audio_url;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private \DateTime $release_date;
+    #[ORM\Column(type: 'date_immutable')]
+    private \DateTimeImmutable $release_date;
 
     #[ORM\Column]
     private int $position;
@@ -133,12 +133,12 @@ class Track
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTime
+    public function getReleaseDate(): \DateTimeImmutable
     {
         return $this->release_date;
     }
 
-    public function setReleaseDate(\DateTime $release_date): static
+    public function setReleaseDate(\DateTimeImmutable $release_date): static
     {
         $this->release_date = $release_date;
 

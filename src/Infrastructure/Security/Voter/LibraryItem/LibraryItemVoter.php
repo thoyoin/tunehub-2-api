@@ -40,13 +40,6 @@ class LibraryItemVoter extends Voter
             return true;
         }
 
-        if (
-            $subject->getPlaylist() !== null
-            && $subject->getPlaylist()->getVisibility() === PlaylistVisibility::Public
-        ) {
-            return true;
-        }
-
         return false;
     }
 }

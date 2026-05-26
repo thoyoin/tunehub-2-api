@@ -65,8 +65,6 @@ final class UserController extends AbstractController
             $profilePicture,
         ));
 
-        return $this->json([
-            'message' => 'User has been updated.',
-        ], 204);
+        return new JsonResponse(null, 204);
     }
 }

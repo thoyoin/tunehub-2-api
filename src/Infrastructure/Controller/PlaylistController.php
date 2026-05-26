@@ -12,8 +12,8 @@ use App\Application\CommandHandler\Playlist\CreatePlaylistCommandHandler;
 use App\Application\CommandHandler\Playlist\DeletePlaylistCommandHandler;
 use App\Application\CommandHandler\Playlist\UpdatePlaylistCommandHandler;
 use App\Application\CommandHandler\Playlist\UpdatePlaylistVisibilityCommandHandler;
-use App\Application\Query\Playlist\GetPlaylistByIdQuery;
-use App\Application\QueryHandler\Playlist\GetPlaylistByIdQueryHandler;
+use App\Application\Query\Playlist\GetPlaylistQuery;
+use App\Application\QueryHandler\Playlist\GetPlaylistQueryHandler;
 use App\Domain\Entity\Playlist;
 use App\Domain\Entity\User;
 use App\Domain\ValueObject\PlaylistVisibility;
@@ -45,12 +45,12 @@ class PlaylistController extends AbstractController
     }
 
     #[Route('/api/playlist/{id}', name: 'playlist_show', methods: ['GET'])]
-    public function show(Playlist $playlist, GetPlaylistByIdQueryHandler $handler): JsonResponse
+    public function show(Playlist $playlist, GetPlaylistQueryHandler $handler): JsonResponse
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::VIEW, $playlist);
 
         return $this->json([
-            'playlistItem' => $handler(new GetPlaylistByIdQuery($playlist->getId())),
+            'playlistItem' => $handler(new GetPlaylistQuery($playlist))
         ]);
     }
 
@@ -59,7 +59,7 @@ class PlaylistController extends AbstractController
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::DESTROY, $playlist);
 
-        $handler(new DeletePlaylistCommand($playlist->getId()));
+        $handler(new DeletePlaylistCommand($playlist));
 
         return $this->json([
             'message' => 'Playlist successfully deleted'
@@ -78,8 +78,8 @@ class PlaylistController extends AbstractController
         return $this->json([
             'visibility' => $handler(
                 new UpdatePlaylistVisibilityCommand(
-                    $playlist->getId(),
-                    PlaylistVisibility::tryFrom($request->visibility),
+                    $playlist,
+                    PlaylistVisibility::from($request->visibility),
                 )
             ),
         ]);
@@ -101,15 +101,13 @@ class PlaylistController extends AbstractController
         $this->denyAccessUnlessGranted(PlaylistVoter::EDIT, $playlist);
 
         $handler(new UpdatePlaylistCommand(
-            $playlist->getId(),
+            $playlist,
             $request->title,
             $request->description,
             $cover
             )
         );
 
-        return $this->json([
-            'message' => 'Playlist successfully updated'
-        ], 204);
+        return new JsonResponse(null, 204);
     }
 }

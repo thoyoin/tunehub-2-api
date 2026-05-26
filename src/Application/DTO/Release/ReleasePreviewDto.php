@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\DTO\Release;
 
 use App\Application\DTO\User\UserDto;
+use App\Domain\ValueObject\ReleaseType;
 
 final readonly class ReleasePreviewDto
 {
@@ -12,7 +13,7 @@ final readonly class ReleasePreviewDto
         private int $id,
         private string $title,
         private UserDto $artist,
-        private string $release_type,
+        private ReleaseType $release_type,
         private string $cover_url,
     )
     {}
@@ -32,7 +33,7 @@ final readonly class ReleasePreviewDto
         return $this->artist;
     }
 
-    public function getReleaseType(): string
+    public function getReleaseType(): ReleaseType
     {
         return $this->release_type;
     }

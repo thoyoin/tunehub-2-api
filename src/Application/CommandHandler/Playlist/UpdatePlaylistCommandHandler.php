@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 final readonly class UpdatePlaylistCommandHandler
 {
     public function __construct(
-        private PlaylistRepository $playlistRepository,
         private EntityManagerInterface $entityManager,
         private MinioService $minioService,
     )
@@ -23,11 +22,7 @@ final readonly class UpdatePlaylistCommandHandler
 
     public function __invoke(UpdatePlaylistCommand $command): void
     {
-        $playlist = $this->playlistRepository->find($command->getPlaylistId());
-
-        if (!$playlist instanceof Playlist) {
-            throw new \DomainException('Playlist not found');
-        }
+        $playlist = $command->getPlaylist();
 
         if ($command->getTitle() !== null) {
             $playlist->setTitle($command->getTitle());
