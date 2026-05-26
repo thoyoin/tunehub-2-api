@@ -19,12 +19,8 @@ final class Version20260515153950 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE library_item ADD playlist_id INT DEFAULT NULL, ADD release_id INT DEFAULT NULL');
-        $this->addSql("UPDATE library_item SET playlist_id = item_id WHERE item_type = 'playlist'");
-        $this->addSql("UPDATE library_item SET release_id = item_id WHERE item_type = 'release'");
         $invalidRows = $this->connection->fetchAllAssociative(
-            "SELECT id, item_id, item_type FROM library_item WHERE playlist_id IS NULL AND release_id IS NULL"
+            "SELECT id, item_id, item_type FROM library_item WHERE item_id IS NULL OR item_type NOT IN ('playlist', 'release')"
         );
 
         if ($invalidRows !== []) {
@@ -33,6 +29,10 @@ final class Version20260515153950 extends AbstractMigration
                 json_encode($invalidRows, JSON_THROW_ON_ERROR)
             ));
         }
+
+        $this->addSql('ALTER TABLE library_item ADD playlist_id INT DEFAULT NULL, ADD release_id INT DEFAULT NULL');
+        $this->addSql("UPDATE library_item SET playlist_id = item_id WHERE item_type = 'playlist'");
+        $this->addSql("UPDATE library_item SET release_id = item_id WHERE item_type = 'release'");
         $this->addSql('ALTER TABLE library_item ADD CONSTRAINT CHK_library_item_exactly_one_target CHECK ((playlist_id IS NOT NULL AND release_id IS NULL) OR (playlist_id IS NULL AND release_id IS NOT NULL))');
         $this->addSql('ALTER TABLE library_item ADD CONSTRAINT FK_B9D4EF736BBD148 FOREIGN KEY (playlist_id) REFERENCES playlist (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE library_item ADD CONSTRAINT FK_B9D4EF73B12A727D FOREIGN KEY (release_id) REFERENCES releases (id) ON DELETE CASCADE');
