@@ -24,7 +24,7 @@ final readonly class GetArtistTracksQueryHandler
     {
         $tracks = $this->trackRepository->findBy(['artist' => $query->artist]);
 
-        if (empty($tracks)) {
+        if ($tracks === []) {
             return [];
         }
 

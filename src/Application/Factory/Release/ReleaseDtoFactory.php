@@ -9,6 +9,7 @@ use App\Application\DTO\Track\TrackDto;
 use App\Application\Factory\Track\TrackDtoFactory;
 use App\Application\Factory\User\UserDtoFactory;
 use App\Domain\Entity\Release;
+use Carbon\Carbon;
 
 readonly class ReleaseDtoFactory
 {
@@ -27,7 +28,7 @@ readonly class ReleaseDtoFactory
             releaseType: $release->getReleaseType(),
             coverUrl: $release->getCoverUrl(),
             duration: $release->getDuration(),
-            releaseDate: $release->getFormattedReleaseDate(),
+            releaseDate: Carbon::instance($release->getReleaseDate())->toFormattedDateString(),
             status: $release->getStatus(),
             tracks: $this->createTrackDtos($release),
         );

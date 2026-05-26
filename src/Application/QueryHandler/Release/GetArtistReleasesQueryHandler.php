@@ -25,7 +25,7 @@ final readonly class GetArtistReleasesQueryHandler
     {
         $releases = $this->releaseRepository->findBy(['artist' => $query->artist]);
 
-        if (empty($releases)) {
+        if ($releases === []) {
             return [];
         }
 

@@ -52,14 +52,29 @@ class ReleaseController extends AbstractController
     {
         $this->denyAccessUnlessGranted(ReleaseVoter::CREATE);
 
+        /** @var array<int, string> $titles */
+        $titles = $request->request->all('titles');
+
+        /** @var array<int, UploadedFile> $audioFiles */
+        $audioFiles = $request->files->all('audioFiles');
+
+        $cover = $request->files->get('cover');
+
+        if (!$cover instanceof UploadedFile) {
+            return $this->json([
+                'message' => 'Validation failed',
+                'errors' => 'Cover is required.',
+            ], 422);
+        }
+
         $uploadReleaseRequest = new UploadReleaseRequest(
-            $request->request->get('releaseTitle'),
-            ReleaseType::tryFrom($request->request->get('type')),
+            (string) $request->request->get('releaseTitle'),
+            ReleaseType::from((string) $request->request->get('type')),
             new \DateTimeImmutable((string) $request->request->get('releaseDate')),
             (int) $request->request->get('artistId'),
-            $request->request->all('titles'),
-            $request->files->all('audioFiles'),
-            $request->files->get('cover')
+            $titles,
+            $audioFiles,
+            $cover
         );
 
         $errors = $validator->validate($uploadReleaseRequest);
