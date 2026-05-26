@@ -45,11 +45,17 @@ final readonly class UploadReleaseCommand
         return $this->artistId;
     }
 
+    /**
+     * @return string[]
+     */
     public function getTitles(): array
     {
         return $this->titles;
     }
 
+    /**
+     * @return UploadedFile[]
+     */
     public function getAudioFiles(): array
     {
         return $this->audioFiles;

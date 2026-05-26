@@ -46,8 +46,13 @@ final readonly class UploadReleaseCommandHandler
             foreach ($command->getAudioFiles() as $index => $file) {
                 $title = $command->getTitles()[$index];
                 $fileInfo = $this->getID3->analyze($file->getPathname());
+                $playtimeSeconds = $fileInfo['playtime_seconds'] ?? null;
 
-                $duration = (int) round($fileInfo['playtime_seconds']);
+                if (!is_int($playtimeSeconds) && !is_float($playtimeSeconds)) {
+                    throw new \DomainException('Unable to determine track duration');
+                }
+
+                $duration = (int) round($playtimeSeconds);
                 $audioUrl = $this->minioService->storeTrack($file);
 
                 $track = new Track();

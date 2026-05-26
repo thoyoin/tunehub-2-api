@@ -6,6 +6,7 @@ namespace App\Application\DTO\Release;
 
 use App\Application\DTO\Track\TrackDto;
 use App\Application\DTO\User\UserDto;
+use App\Domain\ValueObject\ReleaseType;
 
 final readonly class ReleaseDto
 {
@@ -17,7 +18,7 @@ final readonly class ReleaseDto
         private int $id,
         private string $title,
         private UserDto $artist,
-        private string $release_type,
+        private ReleaseType $release_type,
         private string $cover_url,
         private ?\DateTimeImmutable $release_date,
         private string $status,
@@ -40,7 +41,7 @@ final readonly class ReleaseDto
         return $this->artist;
     }
 
-    public function getReleaseType(): string
+    public function getReleaseType(): ReleaseType
     {
         return $this->release_type;
     }

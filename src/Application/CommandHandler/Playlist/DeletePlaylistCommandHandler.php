@@ -17,10 +17,6 @@ final readonly class DeletePlaylistCommandHandler
 
     public function __invoke(DeletePlaylistCommand $command): void
     {
-        if (!$command->playlist instanceof Playlist) {
-            throw new \DomainException('Playlist not found');
-        }
-
         $this->entityManager->remove($command->playlist);
 
         $this->entityManager->flush();

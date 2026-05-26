@@ -10,6 +10,7 @@ use App\Application\Query\Release\GetLatestReleasesQuery;
 use App\Application\QueryHandler\Release\GetLatestReleasesQueryHandler;
 use App\Infrastructure\Request\Release\UploadReleaseRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -32,14 +33,32 @@ class ReleaseController extends AbstractController
         Request $request,
     ): JsonResponse
     {
+        $uploadedAudioFiles = $request->files->all('audioFiles');
+        $cover = $request->files->get('cover');
+
+        /** @var array<int, UploadedFile> $audioFiles */
+        $audioFiles = [];
+
+        foreach ($uploadedAudioFiles as $audioFile) {
+            if (!$audioFile instanceof UploadedFile) {
+                throw new \InvalidArgumentException('Each audio file must be a valid uploaded file.');
+            }
+
+            $audioFiles[] = $audioFile;
+        }
+
+        if (!$cover instanceof UploadedFile) {
+            throw new \InvalidArgumentException('Cover must be a valid uploaded file.');
+        }
+
         $handler(new UploadReleaseCommand(
             $uploadReleaseRequest->releaseTitle,
             $uploadReleaseRequest->type,
             $uploadReleaseRequest->releaseDate,
             $uploadReleaseRequest->artistId,
             $uploadReleaseRequest->titles,
-            $request->files->all('audioFiles'),
-            $request->files->get('cover'),
+            $audioFiles,
+            $cover,
         ));
 
         return $this->json([
