@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Application\Query\LibraryItem;
 
-final readonly class GetLibraryItemByIdQuery
+use App\Domain\Entity\LibraryItem;
+
+final readonly class GetLibraryItemQuery
 {
     public function __construct(
-        public int $itemId,
+        public LibraryItem $item,
     )
     {}
 }

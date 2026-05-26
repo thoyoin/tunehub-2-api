@@ -16,16 +16,7 @@ services:
             $refreshSecret: '%app.refresh_token_secret%'
 
     League\Flysystem\FilesystemOperator $storage:
-        alias: 'flysystem.default.storage'
-
-    App\Infrastructure\Service\MinioService:
-        arguments:
-            $bucket: '%env(AWS_BUCKET)%'
-            $publicEndpoint: '%env(AWS_PUBLIC_ENDPOINT)%'
-            $endpoint: '%env(AWS_ENDPOINT)%'
-            $accessKey: '%env(AWS_ACCESS_KEY_ID)%'
-            $secretKey: '%env(AWS_SECRET_ACCESS_KEY)%'
-            $region: '%env(AWS_DEFAULT_REGION)%'
+        alias: 'minio.storage'
 
     Aws\S3\S3Client:
         arguments:
@@ -37,3 +28,5 @@ services:
                   key: '%env(AWS_ACCESS_KEY_ID)%'
                   secret: '%env(AWS_SECRET_ACCESS_KEY)%'
 
+    getID3:
+        class: getID3

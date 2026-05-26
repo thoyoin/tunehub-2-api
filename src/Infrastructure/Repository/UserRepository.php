@@ -16,5 +16,25 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function existsByEmail(string $email): bool
+    {
+        return $this->createQueryBuilder('u')
+            ->select('1')
+            ->where('u.email = :email')
+            ->setParameter('email', $email)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult() !== null;
+    }
 
+    public function existsByUsername(string $username): bool
+    {
+        return $this->createQueryBuilder('u')
+                ->select('1')
+                ->where('u.slug = :username')
+                ->setParameter('username', $username)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult() !== null;
+    }
 }

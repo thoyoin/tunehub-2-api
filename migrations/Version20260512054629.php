@@ -19,7 +19,20 @@ final class Version20260512054629 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE playlist CHANGE description description VARCHAR(255) DEFAULT NULL');
+
+        $this->addSql("
+            UPDATE releases
+            SET cover_url = 'defaults/default_cover.jpg'
+            WHERE cover_url IS NULL
+        ");
+
+        $this->addSql("
+            UPDATE user
+            SET slug = CONCAT('user-', id)
+            WHERE slug IS NULL
+        ");
+
         $this->addSql('ALTER TABLE playlist CHANGE description description VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE releases CHANGE cover_url cover_url VARCHAR(255) NOT NULL');
         $this->addSql('ALTER TABLE user CHANGE slug slug VARCHAR(255) NOT NULL');

@@ -5,44 +5,37 @@ declare(strict_types=1);
 namespace App\Application\CommandHandler\Playlist;
 
 use App\Application\Command\Playlist\UpdatePlaylistCommand;
+use App\Domain\Entity\Playlist;
 use App\Infrastructure\Repository\PlaylistRepository;
+use App\Infrastructure\Service\MinioService;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final readonly class UpdatePlaylistCommandHandler
 {
     public function __construct(
-        private PlaylistRepository $playlistRepository,
         private EntityManagerInterface $entityManager,
-        private FilesystemOperator $minioStorage,
+        private MinioService $minioService,
     )
     {}
 
     public function __invoke(UpdatePlaylistCommand $command): void
     {
-        $playlist = $this->playlistRepository->find($command->playlistId);
+        $playlist = $command->getPlaylist();
 
-        $playlist->setTitle($command->title);
-        $playlist->setDescription($command->description);
+        if ($command->getTitle() !== null) {
+            $playlist->setTitle($command->getTitle());
+        }
 
-        if ($command->cover) {
-            $fileName = uniqid('cover_', true)
-                . '.'
-                . $command->cover->guessExtension();
+        if ($command->getDescription() !== null) {
+            $playlist->setDescription($command->getDescription());
+        }
 
-            $filePath = 'covers/' . $fileName;
+        if ($command->getCover() instanceof UploadedFile) {
+            $url = $this->minioService->storeCover($command->getCover());
 
-            $stream = fopen($command->cover->getPathname(), 'r');
-
-            $this->minioStorage->writeStream($filePath, $stream);
-
-            $url = $this->minioStorage->publicUrl($filePath);
-
-            if (is_resource($stream)) {
-                fclose($stream);
-            }
-
-            $playlist->setCover($url);
+            $playlist->setCoverUrl($url);
         }
 
         $this->entityManager->flush();

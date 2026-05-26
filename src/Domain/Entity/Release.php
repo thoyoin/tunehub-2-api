@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\ValueObject\ReleaseType;
 use App\Infrastructure\Repository\ReleaseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,7 +15,7 @@ class Release
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'releases')]
     #[ORM\JoinColumn(nullable: false)]
@@ -24,7 +25,7 @@ class Release
     private string $title;
 
     #[ORM\Column(length: 255)]
-    private string $releaseType;
+    private ReleaseType $releaseType;
 
     #[ORM\Column(length: 255)]
     private string $coverUrl;
@@ -38,18 +39,15 @@ class Release
     /**
      * @var Collection<int, Track>
      */
-    #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'release')]
+    #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'release', cascade: ['persist'])]
     private Collection $tracks;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $itemId = null;
 
     public function __construct()
     {
         $this->tracks = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -62,11 +60,12 @@ class Release
     public function setArtist(User $artist): static
     {
         $this->artist = $artist;
+        $artist->addRelease($this);
 
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -78,19 +77,19 @@ class Release
         return $this;
     }
 
-    public function getReleaseType(): ?string
+    public function getReleaseType(): ReleaseType
     {
         return $this->releaseType;
     }
 
-    public function setReleaseType(string $releaseType): static
+    public function setReleaseType(ReleaseType $releaseType): static
     {
         $this->releaseType = $releaseType;
 
         return $this;
     }
 
-    public function getCoverUrl(): ?string
+    public function getCoverUrl(): string
     {
         return $this->coverUrl;
     }
@@ -102,7 +101,7 @@ class Release
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTimeImmutable
+    public function getReleaseDate(): \DateTimeImmutable
     {
         return $this->releaseDate;
     }
@@ -114,7 +113,7 @@ class Release
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -140,32 +139,6 @@ class Release
             $this->tracks->add($track);
             $track->setRelease($this);
         }
-
-        return $this;
-    }
-
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'id' => $this->getId(),
-            'artist' => $this->getArtist(),
-            'title' => $this->getTitle(),
-            'releaseType' => $this->getReleaseType(),
-            'coverUrl' => $this->getCoverUrl(),
-            'releaseDate' => $this->getReleaseDate(),
-            'status' => $this->getStatus(),
-            'tracks' => $this->getTracks()->toArray(),
-        ];
-    }
-
-    public function getItemId(): ?int
-    {
-        return $this->itemId;
-    }
-
-    public function setItemId(int $itemId): static
-    {
-        $this->itemId = $itemId;
 
         return $this;
     }

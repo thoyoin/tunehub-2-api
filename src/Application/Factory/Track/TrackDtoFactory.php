@@ -25,7 +25,7 @@ readonly class TrackDtoFactory
             artist: $this->userDtoFactory->create($track->getArtist()),
             release: $this->releasePreviewDtoFactory->create($track->getRelease()),
             coverUrl: $track->getCoverUrl(),
-            duration: (string)$track->getDuration(),
+            duration: $track->getFormattedDuration(),
             audioUrl: $track->getAudioUrl(),
             releaseDate: $track->getReleaseDate(),
             position: $track->getPosition(),

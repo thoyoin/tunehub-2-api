@@ -6,8 +6,11 @@ services:
     container_name: tunehub_symfony_nginx
     ports:
       - "8080:80"
+      - "8443:443"
+      - "9443:9443"
     volumes:
       - .:/var/www/app
+      - ./docker/nginx/certs:/etc/nginx/certs:ro
     depends_on:
       - php
     networks:
@@ -24,6 +27,7 @@ services:
     depends_on:
       - mysql
       - redis
+      - minio-init
     networks:
       - tunehub_symfony
 
@@ -54,6 +58,29 @@ services:
       MINIO_ROOT_PASSWORD: '${AWS_SECRET_ACCESS_KEY}'
     volumes:
       - minio_data:/data
+    networks:
+      - tunehub_symfony
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: tunehub_minio_init
+    depends_on:
+      - minio
+    environment:
+      AWS_ACCESS_KEY_ID: '${AWS_ACCESS_KEY_ID}'
+      AWS_SECRET_ACCESS_KEY: '${AWS_SECRET_ACCESS_KEY}'
+      AWS_BUCKET: '${AWS_BUCKET}'
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set local http://minio:9000 $$AWS_ACCESS_KEY_ID $$AWS_SECRET_ACCESS_KEY; do
+        echo 'Waiting for MinIO...';
+        sleep 2;
+      done;
+      mc mb --ignore-existing local/$$AWS_BUCKET;
+      mc anonymous set download local/$$AWS_BUCKET;
+      "
+    networks:
+      - tunehub_symfony
 
   redis:
     image: redis:7-alpine

@@ -6,10 +6,10 @@ namespace App\Application\Factory\Playlist;
 
 use App\Application\DTO\Playlist\PlaylistDto;
 use App\Application\DTO\Playlist\PlaylistPreviewDto;
+use App\Application\DTO\Track\TrackDto;
 use App\Application\Factory\Track\TrackDtoFactory;
 use App\Application\Factory\User\UserDtoFactory;
 use App\Domain\Entity\Playlist;
-use App\Domain\Entity\Track;
 
 final readonly class PlaylistDtoFactory
 {
@@ -25,15 +25,12 @@ final readonly class PlaylistDtoFactory
             id: $playlist->getId(),
             title: $playlist->getTitle(),
             slug: $playlist->getSlug(),
-            description: $playlist->getDescription() ?? '',
+            description: $playlist->getDescription(),
             coverUrl: $playlist->getCoverUrl(),
             itemType: $playlist->getItemType(),
             owner: $this->userDtoFactory->create($playlist->getOwner()),
             visibility: $playlist->getVisibility(),
-            tracks: array_map(
-                fn (Track $track) => $this->trackDtoFactory->create($track),
-                $playlist->getTracks()->toArray()
-            ),
+            tracks: $this->createTrackDtos($playlist),
             createdAt: $playlist->getCreatedAt()
         );
     }
@@ -47,10 +44,21 @@ final readonly class PlaylistDtoFactory
             coverUrl: $playlist->getCoverUrl(),
             itemType: $playlist->getItemType(),
             createdAt: $playlist->getCreatedAt(),
-            tracks: array_map(
-                fn (Track $track) => $this->trackDtoFactory->create($track),
-                $playlist->getTracks()->toArray()
-            )
+            tracks: $this->createTrackDtos($playlist),
         );
+    }
+
+    /**
+     * @return array<int, TrackDto>
+     */
+    public function createTrackDtos(Playlist $playlist): array
+    {
+        $trackDtos = [];
+
+        foreach ($playlist->getTracks() as $track) {
+            $trackDtos[] = $this->trackDtoFactory->create($track);
+        }
+
+        return $trackDtos;
     }
 }

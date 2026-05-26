@@ -9,6 +9,7 @@ use App\Application\DTO\LibraryItem\LibraryItemDto;
 use App\Application\Factory\LibraryItem\LibraryItemDtoFactory;
 use App\Application\Factory\LibraryItem\LibraryItemFactory;
 use App\Domain\Entity\Playlist;
+use App\Domain\Entity\User;
 use App\Infrastructure\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -30,6 +31,10 @@ final readonly class CreatePlaylistCommandHandler
         $playlist = new Playlist();
 
         $user = $this->userRepository->find($command->userId);
+
+        if (!$user instanceof User) {
+            throw new \DomainException('User not found');
+        }
 
         $playlist->setOwner($user);
         $playlist->setTitle($command->title);

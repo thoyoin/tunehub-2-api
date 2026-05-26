@@ -7,7 +7,6 @@ use App\Domain\ValueObject\UserRole;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -15,18 +14,18 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSerializable
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255, unique: true)]
     private string $username;
 
-    #[ORM\Column(length: 255, unique: true)]
-    private string $slug = '';
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    private ?string $slug = null;
 
     #[ORM\Column(length: 255, unique: true)]
     private string $email;
@@ -75,13 +74,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
     #[ORM\PrePersist]
     public function generateSlug(): void
     {
-        if ($this->slug === '') {
+        if ($this->slug === null || $this->slug === '') {
             $slugger = new AsciiSlugger();
             $this->slug = strtolower($slugger->slug($this->username)->toString());
         }
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -100,6 +99,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
 
     public function getSlug(): string
     {
+        if ($this->slug === null) {
+            throw new \LogicException('User slug has not been generated yet.');
+        }
+
         return $this->slug;
     }
 
@@ -226,18 +229,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
         return $this->email;
     }
 
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'id' => $this->getId(),
-            'username' => $this->getUsername(),
-            'slug' => $this->getSlug(),
-            'email' => $this->getEmail(),
-            'profile_picture' => $this->getProfilePicture(),
-            'role' => $this->getRole()->value,
-        ];
-    }
-
     /**
      * @return Collection<int, LibraryItem>
      */
@@ -251,18 +242,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JsonSer
         if (!$this->libraryItems->contains($libraryItem)) {
             $this->libraryItems->add($libraryItem);
             $libraryItem->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLibraryItem(LibraryItem $libraryItem): static
-    {
-        if ($this->libraryItems->removeElement($libraryItem)) {
-            // set the owning side to null (unless already changed)
-            if ($libraryItem->getUser() === $this) {
-                $libraryItem->setUser(null);
-            }
         }
 
         return $this;

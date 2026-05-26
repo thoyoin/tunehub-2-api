@@ -12,9 +12,9 @@ class Track
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
-    #[ORM\ManyToOne(inversedBy: 'release')]
+    #[ORM\ManyToOne(inversedBy: 'tracks')]
     #[ORM\JoinColumn(nullable: false)]
     private User $artist;
 
@@ -38,13 +38,13 @@ class Track
     #[ORM\Column(length: 255)]
     private string $audio_url;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private \DateTime $release_date;
+    #[ORM\Column(type: 'date_immutable')]
+    private \DateTimeImmutable $release_date;
 
     #[ORM\Column]
     private int $position;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -85,7 +85,7 @@ class Track
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -97,7 +97,7 @@ class Track
         return $this;
     }
 
-    public function getCoverUrl(): ?string
+    public function getCoverUrl(): string
     {
         return $this->cover_url;
     }
@@ -109,7 +109,7 @@ class Track
         return $this;
     }
 
-    public function getDuration(): ?int
+    public function getDuration(): int
     {
         return $this->duration;
     }
@@ -121,7 +121,7 @@ class Track
         return $this;
     }
 
-    public function getAudioUrl(): ?string
+    public function getAudioUrl(): string
     {
         return $this->audio_url;
     }
@@ -133,19 +133,19 @@ class Track
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTime
+    public function getReleaseDate(): \DateTimeImmutable
     {
         return $this->release_date;
     }
 
-    public function setReleaseDate(\DateTime $release_date): static
+    public function setReleaseDate(\DateTimeImmutable $release_date): static
     {
         $this->release_date = $release_date;
 
         return $this;
     }
 
-    public function getPosition(): ?int
+    public function getPosition(): int
     {
         return $this->position;
     }
@@ -159,7 +159,7 @@ class Track
 
     public function getFormattedDuration(): string
     {
-        $minutes = floor($this->duration / 60);
+        $minutes = (int) floor($this->duration / 60);
 
         $seconds = $this->duration % 60;
 

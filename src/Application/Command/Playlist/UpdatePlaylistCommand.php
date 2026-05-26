@@ -4,26 +4,36 @@ declare(strict_types=1);
 
 namespace App\Application\Command\Playlist;
 
+use App\Domain\Entity\Playlist;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Constraints as Assert;
 
-class UpdatePlaylistCommand
+final readonly class UpdatePlaylistCommand
 {
     public function __construct(
-        #[Assert\NotBlank]
-        public ?int $playlistId,
-
-        #[Assert\Length(max:255)]
-        public ?string $title = null,
-
-        #[Assert\Length(max: 255)]
-        public ?string $description = null,
-
-        #[Assert\File(
-            maxSize: '5M',
-            mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
-        )]
-        public ?UploadedFile $cover = null,
+        private Playlist $playlist,
+        private ?string $title = null,
+        private ?string $description = null,
+        private ?UploadedFile $cover = null,
     )
     {}
+
+    public function getPlaylist(): Playlist
+    {
+        return $this->playlist;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getCover(): ?UploadedFile
+    {
+        return $this->cover;
+    }
 }

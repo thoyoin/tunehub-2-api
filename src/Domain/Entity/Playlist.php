@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: PlaylistRepository::class)]
@@ -17,7 +18,7 @@ class Playlist
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
     private string $title;
@@ -26,9 +27,9 @@ class Playlist
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $itemType = 'playlist';
+    private string $itemType = 'playlist';
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $slug = null;
 
     #[ORM\ManyToOne(inversedBy: 'playlists')]
@@ -41,14 +42,14 @@ class Playlist
     #[ORM\Column(length: 255)]
     private string $cover_url;
 
+    /**
+     * @var Collection<int, Track>
+     */
     #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'playlist')]
     private Collection $tracks;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: false)]
     private DateTimeImmutable $createdAt;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $itemId = null;
 
     public function __construct()
     {
@@ -60,18 +61,25 @@ class Playlist
     #[ORM\PrePersist]
     public function generateSlug(): void
     {
-        if (!$this->slug) {
+        if ($this->slug === null || $this->slug === '') {
             $slugger = new AsciiSlugger();
-            $this->slug = strtolower($slugger->slug($this->title)->toString());
+
+            $baseSlug = strtolower($slugger->slug($this->title)->toString());
+
+            $this->slug = sprintf(
+                '%s-%s',
+                $baseSlug,
+                substr(Uuid::uuid4()->toString(), 0, 8),
+            );
         }
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -95,8 +103,12 @@ class Playlist
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
+        if ($this->slug === null) {
+            throw new \LogicException('Playlist slug has not been generated yet.');
+        }
+
         return $this->slug;
     }
 
@@ -107,7 +119,7 @@ class Playlist
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -119,7 +131,7 @@ class Playlist
         return $this;
     }
 
-    public function getVisibility(): ?PlaylistVisibility
+    public function getVisibility(): PlaylistVisibility
     {
         return $this->visibility;
     }
@@ -131,7 +143,7 @@ class Playlist
         return $this;
     }
 
-    public function getCoverUrl(): ?string
+    public function getCoverUrl(): string
     {
         return $this->cover_url;
     }
@@ -143,6 +155,9 @@ class Playlist
         return $this;
     }
 
+    /**
+     * @return Collection<int, Track>
+     */
     public function getTracks(): Collection
     {
         return $this->tracks;
@@ -152,12 +167,14 @@ class Playlist
     {
         if (!$this->tracks->contains($track)) {
             $this->tracks->add($track);
+
+            $track->setPlaylist($this);
         }
 
         return $this;
     }
 
-    public function getItemType(): ?string
+    public function getItemType(): string
     {
         return $this->itemType;
     }
@@ -183,17 +200,5 @@ class Playlist
         }
 
         return $duration;
-    }
-
-    public function getItemId(): ?int
-    {
-        return $this->itemId;
-    }
-
-    public function setItemId(int $itemId): static
-    {
-        $this->itemId = $itemId;
-
-        return $this;
     }
 }

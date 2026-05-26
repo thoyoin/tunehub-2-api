@@ -16,12 +16,20 @@ class LibraryItemRepository extends ServiceEntityRepository
         parent::__construct($registry, LibraryItem::class);
     }
 
+    /**
+     * @return array<int, LibraryItem>
+     */
     public function getAllByUserId(int $userId): array
     {
-        return $this->createQueryBuilder('l')
+        /**
+         * @var array<int, LibraryItem> $items
+         */
+        $items = $this->createQueryBuilder('l')
             ->where('l.user = :user')
             ->setParameter('user', $userId)
             ->getQuery()
             ->getResult();
+
+        return $items;
     }
 }

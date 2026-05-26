@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace App\Application\DTO\Playlist;
 
+use App\Application\DTO\Track\TrackDto;
 use App\Application\DTO\User\UserDto;
 use App\Domain\ValueObject\PlaylistVisibility;
 use DateTimeImmutable;
 
 final readonly class PlaylistDto
 {
+    /**
+     * @param array<int, TrackDto> $tracks
+     */
     public function __construct(
         private int $id,
         private string $title,
         private string $slug,
-        private string $description,
+        private ?string $description,
         private string $coverUrl,
         private string $itemType,
         private UserDto $owner,
@@ -39,7 +43,7 @@ final readonly class PlaylistDto
         return $this->slug;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -64,6 +68,9 @@ final readonly class PlaylistDto
         return $this->visibility;
     }
 
+    /**
+     * @return array<int, TrackDto>
+     */
     public function getTracks(): array
     {
         return $this->tracks;

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Controller;
 
-use App\Application\Query\LibraryItem\GetLibraryItemByIdQuery;
+use App\Application\Query\LibraryItem\GetLibraryItemQuery;
 use App\Application\Query\LibraryItem\GetLibraryItemsQuery;
-use App\Application\QueryHandler\LibraryItem\GetLibraryItemByIdQueryHandler;
+use App\Application\QueryHandler\LibraryItem\GetLibraryItemQueryHandler;
 use App\Application\QueryHandler\LibraryItem\GetLibraryItemsQueryHandler;
+use App\Domain\Entity\LibraryItem;
 use App\Domain\Entity\User;
+use App\Infrastructure\Security\Voter\LibraryItem\LibraryItemVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -30,10 +32,12 @@ class LibraryItemController extends AbstractController
     }
 
     #[Route('/api/libraryItems/{id}', name: 'apiLibraryItem', methods: ['GET'])]
-    public function show(int $id, GetLibraryItemByIdQueryHandler $handler): JsonResponse
+    public function show(LibraryItem $libraryItem, GetLibraryItemQueryHandler $handler): JsonResponse
     {
+        $this->denyAccessUnlessGranted(LibraryItemVoter::VIEW, $libraryItem);
+
         return $this->json([
-            'libraryItem' => $handler(new GetLibraryItemByIdQuery($id)),
+            'libraryItem' => $handler(new GetLibraryItemQuery($libraryItem)),
         ]);
     }
 }

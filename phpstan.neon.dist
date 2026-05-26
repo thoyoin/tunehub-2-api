@@ -22,6 +22,10 @@ parameters:
         consoleApplicationLoader: tests/console-application.php
     scanFiles:
         - vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php
+    ignoreErrors:
+        -
+            message: '#Access to constant on internal class League\\FlysystemBundle\\FlysystemBundle#'
+            path: config/bundles.php
 
 includes:
     - vendor/phpstan/phpstan/conf/bleedingEdge.neon

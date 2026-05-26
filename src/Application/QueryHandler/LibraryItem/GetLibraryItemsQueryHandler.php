@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Application\QueryHandler\LibraryItem;
 
+use App\Application\DTO\LibraryItem\LibraryItemDto;
 use App\Application\Factory\LibraryItem\LibraryItemDtoFactory;
 use App\Application\Query\LibraryItem\GetLibraryItemsQuery;
-use App\Domain\Entity\LibraryItem;
 use App\Infrastructure\Repository\LibraryItemRepository;
 
 final readonly class GetLibraryItemsQueryHandler
@@ -17,13 +17,19 @@ final readonly class GetLibraryItemsQueryHandler
     )
     {}
 
+    /**
+     * @return array<int, LibraryItemDto>
+     */
     public function __invoke(GetLibraryItemsQuery $query): array
     {
         $libItems = $this->repository->getAllByUserId($query->userId);
 
-        return array_map(
-            fn (LibraryItem $item) => $this->dtoFactory->create($item),
-            $libItems
-        );
+        $dtos = [];
+
+        foreach ($libItems as $libItem) {
+            $dtos[] = $this->dtoFactory->create($libItem);
+        }
+
+        return $dtos;
     }
 }
