@@ -2,8 +2,10 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\ValueObject\ReleaseStatus;
 use App\Domain\ValueObject\ReleaseType;
 use App\Infrastructure\Repository\ReleaseRepository;
+use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,16 +32,21 @@ class Release
     #[ORM\Column(length: 255)]
     private string $coverUrl;
 
-    #[ORM\Column(type: 'date_immutable')]
+    #[ORM\Column(length: 255)]
     private \DateTimeImmutable $releaseDate;
 
-    #[ORM\Column(length: 255, options: ['default' => 'pending'])]
-    private string $status = 'pending';
+    #[ORM\Column(length: 255)]
+    private ReleaseStatus $status = ReleaseStatus::PENDING;
 
     /**
      * @var Collection<int, Track>
      */
-    #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'release', cascade: ['persist'])]
+    #[ORM\OneToMany(
+        targetEntity: Track::class,
+        mappedBy: 'release',
+        cascade: ['persist','remove'],
+        orphanRemoval: true
+    )]
     private Collection $tracks;
 
     public function __construct()
@@ -101,6 +108,20 @@ class Release
         return $this;
     }
 
+    public function getDuration(): string
+    {
+        $nonformatted = 0;
+
+        foreach ($this->tracks as $track) {
+            $nonformatted += $track->getDuration();
+        }
+
+        $minutes = floor($nonformatted / 60);
+        $seconds = $nonformatted % 60;
+
+        return sprintf('%2d min %02d sec', $minutes, $seconds);
+    }
+
     public function getReleaseDate(): \DateTimeImmutable
     {
         return $this->releaseDate;
@@ -113,16 +134,26 @@ class Release
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ReleaseStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ReleaseStatus $status): static
     {
         $this->status = $status;
 
         return $this;
+    }
+
+    public function getFormattedReleaseDate(): string
+    {
+        return Carbon::create($this->releaseDate)->toFormattedDateString();
+    }
+
+    public function getTracksCount(): int
+    {
+        return $this->tracks->count();
     }
 
     /**
@@ -138,6 +169,7 @@ class Release
         if (!$this->tracks->contains($track)) {
             $this->tracks->add($track);
             $track->setRelease($this);
+            $this->duration = $this->getDuration();
         }
 
         return $this;
