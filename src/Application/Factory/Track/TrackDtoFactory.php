@@ -8,6 +8,7 @@ use App\Application\DTO\Track\TrackDto;
 use App\Application\Factory\Release\ReleasePreviewDtoFactory;
 use App\Application\Factory\User\UserDtoFactory;
 use App\Domain\Entity\Track;
+use Carbon\Carbon;
 
 readonly class TrackDtoFactory
 {
@@ -27,7 +28,7 @@ readonly class TrackDtoFactory
             coverUrl: $track->getCoverUrl(),
             duration: $track->getFormattedDuration(),
             audioUrl: $track->getAudioUrl(),
-            releaseDate: $track->getFormattedReleaseDate(),
+            releaseDate: Carbon::instance($track->getReleaseDate())->toFormattedDateString(),
             position: $track->getPosition(),
         );
     }

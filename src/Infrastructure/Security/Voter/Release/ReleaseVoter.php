@@ -12,7 +12,10 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class ReleaseVoter extends Voter
+/**
+ * @extends Voter<string, Release>
+ */
+final class ReleaseVoter extends Voter
 {
     public const string CREATE = 'RELEASE_CREATE';
     public const string UPDATE = 'RELEASE_UPDATE';
@@ -37,6 +40,7 @@ class ReleaseVoter extends Voter
             self::UPDATE => $this->canUpdate($user, $subject),
             self::PUBLISH => $this->canPublish($user, $subject),
             self::DELETE => $this->canDelete($user, $subject),
+            default => false,
         };
     }
 

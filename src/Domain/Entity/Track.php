@@ -3,7 +3,6 @@
 namespace App\Domain\Entity;
 
 use App\Infrastructure\Repository\TrackRepository;
-use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TrackRepository::class)]
@@ -164,10 +163,5 @@ class Track
         $seconds = $this->duration % 60;
 
         return sprintf('%02d:%02d', $minutes, $seconds);
-    }
-
-    public function getFormattedReleaseDate(): string
-    {
-        return Carbon::create($this->release_date)->toFormattedDateString();
     }
 }

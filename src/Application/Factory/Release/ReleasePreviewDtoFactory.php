@@ -7,6 +7,7 @@ namespace App\Application\Factory\Release;
 use App\Application\DTO\Release\ReleasePreviewDto;
 use App\Application\Factory\User\UserPreviewDtoFactory;
 use App\Domain\Entity\Release;
+use Carbon\Carbon;
 
 final readonly class ReleasePreviewDtoFactory
 {
@@ -22,7 +23,7 @@ final readonly class ReleasePreviewDtoFactory
             title: $release->getTitle(),
             artist: $this->dtoFactory->create($release->getArtist()),
             releaseType: $release->getReleaseType(),
-            releaseDate: $release->getFormattedReleaseDate(),
+            releaseDate: Carbon::instance($release->getReleaseDate())->toFormattedDateString(),
             releaseDuration: $release->getDuration(),
             tracksCount: $release->getTracksCount(),
             coverUrl: $release->getCoverUrl(),

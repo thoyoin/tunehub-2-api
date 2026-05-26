@@ -2,14 +2,15 @@
 
 namespace App\Domain\Entity;
 
+use AllowDynamicProperties;
 use App\Domain\ValueObject\ReleaseStatus;
 use App\Domain\ValueObject\ReleaseType;
 use App\Infrastructure\Repository\ReleaseRepository;
-use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+#[AllowDynamicProperties]
 #[ORM\Table(name: 'releases')]
 #[ORM\Entity(repositoryClass: ReleaseRepository::class)]
 class Release
@@ -116,7 +117,7 @@ class Release
             $nonformatted += $track->getDuration();
         }
 
-        $minutes = floor($nonformatted / 60);
+        $minutes = (int) floor($nonformatted / 60);
         $seconds = $nonformatted % 60;
 
         return sprintf('%2d min %02d sec', $minutes, $seconds);
@@ -146,11 +147,6 @@ class Release
         return $this;
     }
 
-    public function getFormattedReleaseDate(): string
-    {
-        return Carbon::create($this->releaseDate)->toFormattedDateString();
-    }
-
     public function getTracksCount(): int
     {
         return $this->tracks->count();
@@ -169,7 +165,6 @@ class Release
         if (!$this->tracks->contains($track)) {
             $this->tracks->add($track);
             $track->setRelease($this);
-            $this->duration = $this->getDuration();
         }
 
         return $this;
