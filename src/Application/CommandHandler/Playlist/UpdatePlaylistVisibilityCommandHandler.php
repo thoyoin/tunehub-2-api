@@ -5,30 +5,21 @@ declare(strict_types=1);
 namespace App\Application\CommandHandler\Playlist;
 
 use App\Application\Command\Playlist\UpdatePlaylistVisibilityCommand;
-use App\Domain\Entity\Playlist;
 use App\Domain\ValueObject\PlaylistVisibility;
-use App\Infrastructure\Repository\PlaylistRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class UpdatePlaylistVisibilityCommandHandler
 {
     public function __construct(
-        private PlaylistRepository $playlistRepository,
         private EntityManagerInterface $entityManager,
     )
     {}
 
     public function __invoke(UpdatePlaylistVisibilityCommand $command): PlaylistVisibility
     {
-        $playlist = $this->playlistRepository->find($command->getPlaylistId());
+        $playlist = $command->getPlaylist();
 
-        if (!$playlist instanceof Playlist) {
-            throw new \DomainException('Playlist not found');
-        }
-
-        if ($command->getVisibility() instanceof PlaylistVisibility) {
-            $playlist->setVisibility($command->getVisibility());
-        }
+        $playlist->setVisibility($command->getVisibility());
 
         $this->entityManager->flush();
 

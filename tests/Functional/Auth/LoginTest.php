@@ -5,10 +5,11 @@ namespace App\Tests\Functional\Auth;
 use App\Tests\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class LoginTest extends WebTestCase
 {
-    use Factories;
+    use Factories, ResetDatabase;
 
     public function testUserCanLogin(): void
     {

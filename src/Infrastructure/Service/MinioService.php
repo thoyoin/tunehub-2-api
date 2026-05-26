@@ -64,4 +64,31 @@ readonly class MinioService
 
         return $url;
     }
+
+    public function storeTrack(UploadedFile $file): string
+    {
+        $fileName = sprintf(
+            'audio_%s.%s',
+            bin2hex(random_bytes(16)),
+            $file->guessExtension()
+        );
+
+        $filePath = 'tracks/' . $fileName;
+
+        $stream = fopen($file->getPathname(), 'r');
+
+        if ($stream === false) {
+            throw new \RuntimeException('Cannot open uploaded file.');
+        }
+
+        try {
+            $this->minioStorage->writeStream($filePath, $stream);
+
+            $url = $this->minioStorage->publicUrl($filePath);
+        } finally {
+            fclose($stream);
+        }
+
+        return $url;
+    }
 }

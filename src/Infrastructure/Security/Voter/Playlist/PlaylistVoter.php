@@ -33,10 +33,6 @@ final class PlaylistVoter extends Voter
     ): bool {
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
-            return false;
-        }
-
         return match ($attribute) {
             self::VIEW => $this->canView($subject, $user),
             self::EDIT => $this->canEdit($subject, $user),

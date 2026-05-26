@@ -8,10 +8,11 @@ use App\Tests\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class RefreshTokenTest extends WebTestCase
 {
-    use Factories;
+    use Factories, ResetDatabase;
 
     public function testUserCanRefreshToken(): void
     {

@@ -12,6 +12,7 @@
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6",
         "firebase/php-jwt": "^7.0",
+        "james-heinrich/getid3": "*",
         "league/flysystem-aws-s3-v3": "^3.34",
         "league/flysystem-bundle": "^3.7",
         "lexik/jwt-authentication-bundle": "^3.2",

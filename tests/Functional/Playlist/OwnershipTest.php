@@ -8,9 +8,12 @@ use App\Domain\ValueObject\PlaylistVisibility;
 use App\Tests\Factory\PlaylistFactory;
 use App\Tests\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class OwnershipTest extends WebTestCase
 {
+    use ResetDatabase;
+
     public function testNonOwnerCannotViewPrivatePlaylist(): void
     {
         $client = static::createClient();
