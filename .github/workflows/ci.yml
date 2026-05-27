@@ -54,6 +54,8 @@ jobs:
                     JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
                     REFRESH_TOKEN_SECRET=this_is_a_long_test_refresh_token_secret_32_chars_minimum
                     JWT_PASSPHRASE=test
+                    MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
+                    MESSENGER_TRANSPORT_DSN_FAILED=doctrine://default?queue_name=failed
                     EOF
 
             -   name: Generate JWT keys for test environment
