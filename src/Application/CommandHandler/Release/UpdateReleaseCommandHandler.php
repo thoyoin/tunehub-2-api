@@ -36,7 +36,7 @@ final readonly class UpdateReleaseCommandHandler
 
                 $release->setCoverUrl($url);
 
-                if ($oldCover) {
+                if ($oldCover !== '') {
                     $this->messageBus->dispatch(new DeleteFileCommand($oldCover));
                 }
             }
