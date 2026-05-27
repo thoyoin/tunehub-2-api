@@ -1,0 +1,8 @@
+framework:
+    messenger:
+        transports:
+             async: '%env(MESSENGER_TRANSPORT_DSN)%'
+             failed: '%env(MESSENGER_TRANSPORT_DSN_FAILED)%'
+
+        routing:
+             'App\Application\Command\Media\DeleteFileCommand': async

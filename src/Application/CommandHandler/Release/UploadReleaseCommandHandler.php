@@ -8,10 +8,12 @@ use App\Application\Command\Release\UploadReleaseCommand;
 use App\Domain\Entity\Release;
 use App\Domain\Entity\Track;
 use App\Domain\Entity\User;
+use App\Domain\Factory\TrackFactory;
 use App\Infrastructure\Repository\UserRepository;
 use App\Infrastructure\Service\MinioService;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 final readonly class UploadReleaseCommandHandler
 {
@@ -20,6 +22,7 @@ final readonly class UploadReleaseCommandHandler
         private MinioService $minioService,
         private \getID3 $getID3,
         private EntityManagerInterface $entityManager,
+        private TrackFactory $trackFactory,
     )
     {}
 
@@ -55,15 +58,16 @@ final readonly class UploadReleaseCommandHandler
                 $duration = (int) round($playtimeSeconds);
                 $audioUrl = $this->minioService->storeTrack($file);
 
-                $track = new Track();
-                $track->setTitle($title);
-                $track->setAudioUrl($audioUrl);
-                $track->setDuration($duration);
-                $track->setArtist($user);
-                $track->setRelease($release);
-                $track->setPosition($index + 1);
-                $track->setCoverUrl($release->getCoverUrl());
-                $track->setReleaseDate($release->getReleaseDate());
+                $track = $this->trackFactory->create(
+                    $title,
+                    $audioUrl,
+                    $duration,
+                    $user,
+                    $release,
+                    $index + 1,
+                    $release->getCoverUrl(),
+                    $release->getReleaseDate(),
+                );
 
                 $release->addTrack($track);
             }

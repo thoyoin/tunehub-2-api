@@ -91,4 +91,13 @@ readonly class MinioService
 
         return $url;
     }
+
+    public function destroyFile(string $audioUrl): void
+    {
+        $parsedPath = parse_url($audioUrl, PHP_URL_PATH);
+
+        $cleanedPath = preg_replace('#^/tunehub#', '', $parsedPath);
+
+        $this->minioStorage->delete($cleanedPath);
+    }
 }
