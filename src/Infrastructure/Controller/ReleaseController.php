@@ -40,51 +40,13 @@ class ReleaseController extends AbstractController
         ]);
     }
 
-    /**
-     * @throws \DateMalformedStringException
-     */
     #[Route('/api/release/upload', name: 'upload_release', methods: ['POST'])]
     public function upload(
         UploadReleaseCommandHandler $handler,
-        Request $request,
-        ValidatorInterface $validator
+        UploadReleaseRequest $uploadReleaseRequest,
     ): JsonResponse
     {
         $this->denyAccessUnlessGranted(ReleaseVoter::CREATE);
-
-        /** @var array<int, string> $titles */
-        $titles = $request->request->all('titles');
-
-        /** @var array<int, UploadedFile> $audioFiles */
-        $audioFiles = $request->files->all('audioFiles');
-
-        $cover = $request->files->get('cover');
-
-        if (!$cover instanceof UploadedFile) {
-            return $this->json([
-                'message' => 'Validation failed',
-                'errors' => 'Cover is required.',
-            ], 422);
-        }
-
-        $uploadReleaseRequest = new UploadReleaseRequest(
-            (string) $request->request->get('releaseTitle'),
-            ReleaseType::from((string) $request->request->get('type')),
-            new \DateTimeImmutable((string) $request->request->get('releaseDate')),
-            (int) $request->request->get('artistId'),
-            $titles,
-            $audioFiles,
-            $cover
-        );
-
-        $errors = $validator->validate($uploadReleaseRequest);
-
-        if (count($errors) > 0) {
-            return $this->json([
-                'message' => 'Validation failed',
-                'errors' => (string) $errors,
-            ], 422);
-        }
 
         $handler(new UploadReleaseCommand(
             $uploadReleaseRequest->releaseTitle,
