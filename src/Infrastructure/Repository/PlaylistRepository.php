@@ -16,28 +16,28 @@ class PlaylistRepository extends ServiceEntityRepository
         parent::__construct($registry, Playlist::class);
     }
 
-    //    /**
-    //     * @return Playlist[] Returns an array of Playlist objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findTrackPresenceForUser($user, $trackIds): array
+    {
+        $results = $this->createQueryBuilder('p')
+            ->select('IDENTITY(pt.track) as track_id', 'p.id as playlist_id')
+            ->join('p.items', 'pt')
+            ->where('p.owner = :user')
+            ->andWhere('IDENTITY(pt.track) IN (:trackIds)')
+            ->setParameter('user', $user)
+            ->setParameter('trackIds', $trackIds)
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?Playlist
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $stateMap = [];
+
+        foreach ($trackIds as $id) {
+            $stateMap[$id] = [];
+        }
+
+        foreach ($results as $row) {
+            $stateMap[$row['track_id']][] = (int)$row['playlist_id'];
+        }
+
+        return $stateMap;
+    }
 }

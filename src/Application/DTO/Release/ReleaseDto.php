@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\DTO\Release;
 
 use App\Application\DTO\Track\TrackDto;
-use App\Application\DTO\User\UserDto;
+use App\Application\DTO\User\UserPreviewDto;
 use App\Domain\ValueObject\ReleaseStatus;
 use App\Domain\ValueObject\ReleaseType;
 
@@ -18,7 +18,7 @@ final readonly class ReleaseDto
     public function __construct(
         private int $id,
         private string $title,
-        private UserDto $artist,
+        private UserPreviewDto $artist,
         private ReleaseType $releaseType,
         private string $coverUrl,
         private string $duration,
@@ -38,7 +38,7 @@ final readonly class ReleaseDto
         return $this->title;
     }
 
-    public function getArtist(): UserDto
+    public function getArtist(): UserPreviewDto
     {
         return $this->artist;
     }

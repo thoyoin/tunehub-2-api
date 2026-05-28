@@ -2,8 +2,8 @@
 
 namespace App\Domain\Entity;
 
-use App\Infrastructure\Repository\PlaylistRepository;
 use App\Domain\ValueObject\PlaylistVisibility;
+use App\Infrastructure\Repository\PlaylistRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -43,17 +43,22 @@ class Playlist
     private string $cover_url;
 
     /**
-     * @var Collection<int, Track>
+     * @var Collection<int, PlaylistTrack>
      */
-    #[ORM\OneToMany(targetEntity: Track::class, mappedBy: 'playlist')]
-    private Collection $tracks;
+    #[ORM\OneToMany(
+        targetEntity: PlaylistTrack::class,
+        mappedBy: 'playlist',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    private Collection $items;
 
     #[ORM\Column(nullable: false)]
     private DateTimeImmutable $createdAt;
 
     public function __construct()
     {
-        $this->tracks = new ArrayCollection();
+        $this->items = new ArrayCollection();
 
         $this->createdAt = new DateTimeImmutable();
     }
@@ -156,19 +161,40 @@ class Playlist
     }
 
     /**
-     * @return Collection<int, Track>
+     * @return Collection<int, PlaylistTrack>
      */
-    public function getTracks(): Collection
+    public function getItems(): Collection
     {
-        return $this->tracks;
+        return $this->items;
+    }
+
+    public function hasTrack(Track $track): bool
+    {
+        foreach ($this->items as $item) {
+            if ($item->getTrack() === $track) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function addTrack(Track $track): static
     {
-        if (!$this->tracks->contains($track)) {
-            $this->tracks->add($track);
+        if (!$this->hasTrack($track)) {
+            $this->items->add(new PlaylistTrack($this, $track));
+        }
 
-            $track->setPlaylist($this);
+        return $this;
+    }
+
+    public function removeTrack(Track $track): static
+    {
+        foreach ($this->items as $item) {
+            if ($item->getTrack() === $track) {
+                $this->items->removeElement($item);
+                break;
+            }
         }
 
         return $this;
@@ -191,14 +217,19 @@ class Playlist
         return $this->createdAt;
     }
 
-    public function getDuration(): int
+    public function getDuration(): string
     {
-        $duration = 0;
+        $nonformatted = 0;
 
-        foreach ($this->getTracks() as $track) {
-            $duration += $track->getDuration();
+        foreach ($this->items as $item) {
+            $track = $item->getTrack();
+
+            $nonformatted += $track->getDuration();
         }
 
-        return $duration;
+        $minutes = (int) floor($nonformatted / 60);
+        $seconds = $nonformatted % 60;
+
+        return sprintf('%2d min %02d sec', $minutes, $seconds);
     }
 }

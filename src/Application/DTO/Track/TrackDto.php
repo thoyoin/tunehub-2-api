@@ -6,20 +6,21 @@ namespace App\Application\DTO\Track;
 
 use App\Application\DTO\Release\ReleaseDto;
 use App\Application\DTO\Release\ReleasePreviewDto;
-use App\Application\DTO\User\UserDto;
+use App\Application\DTO\User\UserPreviewDto;
 
 final readonly class TrackDto
 {
     public function __construct(
         private int $id,
         private string $title,
-        private UserDto $artist,
+        private UserPreviewDto $artist,
         private ReleaseDto|ReleasePreviewDto $release,
         private string $coverUrl,
         private string $duration,
         private string $audioUrl,
         private string $releaseDate,
         private int $position,
+        private ?string $addedAgo,
     )
     {}
 
@@ -33,7 +34,7 @@ final readonly class TrackDto
         return $this->title;
     }
 
-    public function getArtist(): UserDto
+    public function getArtist(): UserPreviewDto
     {
         return $this->artist;
     }
@@ -66,5 +67,10 @@ final readonly class TrackDto
     public function getPosition(): int
     {
         return $this->position;
+    }
+
+    public function getAddedAgo(): ?string
+    {
+        return $this->addedAgo;
     }
 }

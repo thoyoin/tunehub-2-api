@@ -7,7 +7,7 @@ namespace App\Application\Factory\Release;
 use App\Application\DTO\Release\ReleaseDto;
 use App\Application\DTO\Track\TrackDto;
 use App\Application\Factory\Track\TrackDtoFactory;
-use App\Application\Factory\User\UserDtoFactory;
+use App\Application\Factory\User\UserPreviewDtoFactory;
 use App\Domain\Entity\Release;
 use Carbon\Carbon;
 
@@ -15,7 +15,7 @@ readonly class ReleaseDtoFactory
 {
     public function __construct(
         private TrackDtoFactory $trackDtoFactory,
-        private UserDtoFactory $userDtoFactory,
+        private UserPreviewDtoFactory $userDtoFactory,
     )
     {}
 
