@@ -28,9 +28,6 @@ class Track
     #[ORM\Column(length: 255)]
     private string $title;
 
-    #[ORM\Column(length: 255)]
-    private string $cover_url;
-
     #[ORM\Column]
     private int $duration;
 
@@ -98,14 +95,7 @@ class Track
 
     public function getCoverUrl(): string
     {
-        return $this->cover_url;
-    }
-
-    public function setCoverUrl(string $cover_url): static
-    {
-        $this->cover_url = $cover_url;
-
-        return $this;
+        return $this->release->getCoverUrl();
     }
 
     public function getDuration(): int

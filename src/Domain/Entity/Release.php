@@ -104,7 +104,7 @@ class Release
 
     public function setCoverUrl(string $coverUrl): static
     {
-        $this->coverUrl= $coverUrl;
+        $this->coverUrl = $coverUrl;
 
         return $this;
     }
