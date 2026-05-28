@@ -14,6 +14,9 @@ final readonly class CheckTrackPresenceQueryHandler
     )
     {}
 
+    /**
+     * @return array<int|string, array<int>>
+     */
     public function __invoke(CheckTrackPresenceQuery $query): array
     {
         return $this->playlistRepository->findTrackPresenceForUser($query->getUser(), $query->getTrackIds());

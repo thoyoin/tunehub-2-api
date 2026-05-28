@@ -8,6 +8,9 @@ use App\Domain\Entity\User;
 
 final readonly class CheckTrackPresenceQuery
 {
+    /**
+     * @param array<int|string> $trackIds
+     */
     public function __construct(
         private User $user,
         private array $trackIds,
@@ -19,6 +22,9 @@ final readonly class CheckTrackPresenceQuery
         return $this->user;
     }
 
+    /**
+     * @return array<int|string>
+     */
     public function getTrackIds(): array
     {
         return $this->trackIds;

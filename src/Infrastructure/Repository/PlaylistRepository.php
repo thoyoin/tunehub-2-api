@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Playlist;
+use App\Domain\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,7 +17,12 @@ class PlaylistRepository extends ServiceEntityRepository
         parent::__construct($registry, Playlist::class);
     }
 
-    public function findTrackPresenceForUser($user, $trackIds): array
+    /**
+     * @param User $user
+     * @param array<int|string> $trackIds
+     * @return array<int|string, array<int>>
+     */
+    public function findTrackPresenceForUser(User $user, array $trackIds): array
     {
         $results = $this->createQueryBuilder('p')
             ->select('IDENTITY(pt.track) as track_id', 'p.id as playlist_id')
@@ -34,8 +40,9 @@ class PlaylistRepository extends ServiceEntityRepository
             $stateMap[$id] = [];
         }
 
+        /** @var array<array{track_id: int, playlist_id: int}> $results */
         foreach ($results as $row) {
-            $stateMap[$row['track_id']][] = (int)$row['playlist_id'];
+            $stateMap[$row['track_id']][] = $row['playlist_id'];
         }
 
         return $stateMap;
