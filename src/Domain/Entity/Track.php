@@ -21,10 +21,6 @@ class Track
     #[ORM\JoinColumn(nullable: false)]
     private Release $release;
 
-    #[ORM\ManyToOne(inversedBy: 'tracks')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Playlist $playlist = null;
-
     #[ORM\Column(length: 255)]
     private string $title;
 
@@ -39,6 +35,9 @@ class Track
 
     #[ORM\Column]
     private int $position;
+
+    public function __construct()
+    {}
 
     public function getId(): int
     {
@@ -65,18 +64,6 @@ class Track
     public function setRelease(Release $release): static
     {
         $this->release = $release;
-
-        return $this;
-    }
-
-    public function getPlaylist(): ?Playlist
-    {
-        return $this->playlist;
-    }
-
-    public function setPlaylist(?Playlist $playlist): static
-    {
-        $this->playlist = $playlist;
 
         return $this;
     }

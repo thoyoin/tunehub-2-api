@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Playlist;
+use App\Domain\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,34 @@ class PlaylistRepository extends ServiceEntityRepository
         parent::__construct($registry, Playlist::class);
     }
 
-    //    /**
-    //     * @return Playlist[] Returns an array of Playlist objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @param User $user
+     * @param array<int|string> $trackIds
+     * @return array<int|string, array<int>>
+     */
+    public function findTrackPresenceForUser(User $user, array $trackIds): array
+    {
+        $results = $this->createQueryBuilder('p')
+            ->select('IDENTITY(pt.track) as track_id', 'p.id as playlist_id')
+            ->join('p.items', 'pt')
+            ->where('p.owner = :user')
+            ->andWhere('IDENTITY(pt.track) IN (:trackIds)')
+            ->setParameter('user', $user)
+            ->setParameter('trackIds', $trackIds)
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?Playlist
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $stateMap = [];
+
+        foreach ($trackIds as $id) {
+            $stateMap[$id] = [];
+        }
+
+        /** @var array<array{track_id: int, playlist_id: int}> $results */
+        foreach ($results as $row) {
+            $stateMap[$row['track_id']][] = $row['playlist_id'];
+        }
+
+        return $stateMap;
+    }
 }

@@ -21,6 +21,7 @@ final readonly class PlaylistDto
         private ?string $description,
         private string $coverUrl,
         private string $itemType,
+        private string $duration,
         private UserDto $owner,
         private PlaylistVisibility $visibility,
         private array $tracks,
@@ -56,6 +57,11 @@ final readonly class PlaylistDto
     public function getItemType(): string
     {
         return $this->itemType;
+    }
+
+    public function getDuration(): string
+    {
+        return $this->duration;
     }
 
     public function getOwner(): UserDto

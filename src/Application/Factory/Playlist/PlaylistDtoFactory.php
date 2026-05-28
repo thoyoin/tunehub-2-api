@@ -28,6 +28,7 @@ final readonly class PlaylistDtoFactory
             description: $playlist->getDescription(),
             coverUrl: $playlist->getCoverUrl(),
             itemType: $playlist->getItemType(),
+            duration: $playlist->getDuration(),
             owner: $this->userDtoFactory->create($playlist->getOwner()),
             visibility: $playlist->getVisibility(),
             tracks: $this->createTrackDtos($playlist),
@@ -55,8 +56,12 @@ final readonly class PlaylistDtoFactory
     {
         $trackDtos = [];
 
-        foreach ($playlist->getTracks() as $track) {
-            $trackDtos[] = $this->trackDtoFactory->create($track);
+        foreach ($playlist->getItems() as $playlistTrack) {
+            $track = $playlistTrack->getTrack();
+
+            $addedAt = $playlistTrack->getAddedAt();
+
+            $trackDtos[] = $this->trackDtoFactory->create($track, $addedAt);
         }
 
         return $trackDtos;

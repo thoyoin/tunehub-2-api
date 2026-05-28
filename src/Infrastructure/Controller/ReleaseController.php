@@ -5,15 +5,19 @@ declare(strict_types=1);
 namespace App\Infrastructure\Controller;
 
 use App\Application\Command\Release\DeleteReleaseCommand;
+use App\Application\Command\Release\GetReleaseCommand;
 use App\Application\Command\Release\PublishReleaseCommand;
 use App\Application\Command\Release\UpdateReleaseCommand;
 use App\Application\Command\Release\UploadReleaseCommand;
 use App\Application\CommandHandler\Release\DeleteReleaseCommandHandler;
+use App\Application\CommandHandler\Release\GetReleaseCommandHandler;
 use App\Application\CommandHandler\Release\PublishReleaseCommandHandler;
 use App\Application\CommandHandler\Release\UpdateReleaseCommandHandler;
 use App\Application\CommandHandler\Release\UploadReleaseCommandHandler;
 use App\Application\Query\Release\GetLatestReleasesQuery;
+use App\Application\Query\Release\GetReleaseQuery;
 use App\Application\QueryHandler\Release\GetLatestReleasesQueryHandler;
+use App\Application\QueryHandler\Release\GetReleaseQueryHandler;
 use App\Domain\Entity\Release;
 use App\Domain\Entity\User;
 use App\Domain\ValueObject\ReleaseType;
@@ -88,10 +92,7 @@ class ReleaseController extends AbstractController
     }
 
     #[Route('/api/release/{id}/publish', name: 'release_publish', methods: ['PATCH'])]
-    public function publish(
-        Release $release,
-        PublishReleaseCommandHandler $handler,
-    ): JsonResponse
+    public function publish(Release $release, PublishReleaseCommandHandler $handler): JsonResponse
     {
         $this->denyAccessUnlessGranted(ReleaseVoter::PUBLISH, $release);
 
@@ -101,15 +102,20 @@ class ReleaseController extends AbstractController
     }
 
     #[Route('/api/release/{id}', name: 'release_delete', methods: ['DELETE'])]
-    public function delete(
-        Release $release,
-        DeleteReleaseCommandHandler $handler
-    ): JsonResponse
+    public function delete(Release $release, DeleteReleaseCommandHandler $handler): JsonResponse
     {
         $this->denyAccessUnlessGranted(ReleaseVoter::DELETE, $release);
 
         $handler(new DeleteReleaseCommand($release));
 
         return new JsonResponse(null, 204);
+    }
+
+    #[Route('/api/release/{id}', name: 'release_show', methods: ['GET'])]
+    public function show(Release $release, GetReleaseQueryHandler $handler): JsonResponse
+    {
+        return $this->json([
+            'release' => $handler(new GetReleaseQuery($release))
+        ]);
     }
 }
