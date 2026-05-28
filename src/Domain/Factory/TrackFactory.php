@@ -18,7 +18,6 @@ class TrackFactory
         User $artist,
         Release $release,
         int $position,
-        string $coverUrl,
         DateTimeImmutable $releaseDate,
     ): Track
     {
@@ -30,7 +29,6 @@ class TrackFactory
         $track->setArtist($artist);
         $track->setRelease($release);
         $track->setPosition($position);
-        $track->setCoverUrl($coverUrl);
         $track->setReleaseDate($releaseDate);
 
         return $track;

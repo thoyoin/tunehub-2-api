@@ -65,7 +65,6 @@ final readonly class UploadReleaseCommandHandler
                     $user,
                     $release,
                     $index + 1,
-                    $release->getCoverUrl(),
                     $release->getReleaseDate(),
                 );
 
