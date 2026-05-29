@@ -49,7 +49,7 @@ class PlaylistController extends AbstractController
         }
 
         return $this->json([
-            'libraryItem' => $handler(new CreatePlaylistCommand($user->getId())),
+            'libraryItem' => $handler(new CreatePlaylistCommand((int)$user->getId())),
         ]);
     }
 
@@ -114,8 +114,7 @@ class PlaylistController extends AbstractController
             $request->title,
             $request->description,
             $cover
-            )
-        );
+        ));
 
         return new JsonResponse(null, 204);
     }
