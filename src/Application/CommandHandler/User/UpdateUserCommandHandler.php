@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Application\CommandHandler\User;
 
+use App\Application\Command\Media\DeleteFileCommand;
 use App\Application\Command\User\UpdateUserCommand;
 use App\Domain\Entity\User;
 use App\Infrastructure\Repository\UserRepository;
 use App\Infrastructure\Service\MinioService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 readonly class UpdateUserCommandHandler
 {
@@ -17,6 +19,7 @@ readonly class UpdateUserCommandHandler
         private UserRepository $userRepository,
         private EntityManagerInterface $entityManager,
         private MinioService $minioService,
+        private MessageBusInterface $messageBus,
     )
     {}
 
@@ -28,20 +31,28 @@ readonly class UpdateUserCommandHandler
             throw new \DomainException('User not found');
         }
 
-        if ($command->getUsername() !== null) {
-            $user->setUsername($command->getUsername());
-        }
+        $oldProfilePicture = $user->getProfilePicture();
 
-        if ($command->getEmail() !== null) {
-            $user->setEmail($command->getEmail());
-        }
+        $this->entityManager->wrapInTransaction(function () use ($command, $oldProfilePicture, $user) {
+            if ($command->getUsername() !== null) {
+                $user->setUsername($command->getUsername());
+            }
 
-        if ($command->getProfilePicture() instanceof UploadedFile) {
-            $url = $this->minioService->storeProfilePicture($command->getProfilePicture());
+            if ($command->getEmail() !== null) {
+                $user->setEmail($command->getEmail());
+            }
 
-            $user->setProfilePicture($url);
-        }
+            if ($command->getProfilePicture() instanceof UploadedFile) {
+                $url = $this->minioService->storeProfilePicture($command->getProfilePicture());
 
-        $this->entityManager->flush();
+                $user->setProfilePicture($url);
+
+                if ($oldProfilePicture !== '') {
+                    $this->messageBus->dispatch(new DeleteFileCommand($oldProfilePicture));
+                }
+            }
+
+            $this->entityManager->flush();
+        });
     }
 }
