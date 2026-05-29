@@ -11,7 +11,6 @@ class CreatePlaylistCommand
     public function __construct(
         public int $userId,
         public string $title = 'My Playlist',
-        public string $coverUrl = '',
         public PlaylistVisibility $visibility = PlaylistVisibility::Public,
     )
     {}

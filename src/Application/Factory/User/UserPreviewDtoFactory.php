@@ -12,7 +12,7 @@ class UserPreviewDtoFactory
     public function create(User $user): UserPreviewDto
     {
         return new UserPreviewDto(
-            $user->getId(),
+            (int)$user->getId(),
             $user->getUsername(),
             $user->getProfilePicture(),
         );

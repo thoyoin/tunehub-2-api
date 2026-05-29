@@ -59,7 +59,7 @@ final class UserController extends AbstractController
         }
 
         $handler(new UpdateUserCommand(
-            $user->getId(),
+            (int)$user->getId(),
             $request->username,
             $request->email,
             $profilePicture,

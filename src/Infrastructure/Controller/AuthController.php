@@ -99,4 +99,20 @@ final class AuthController extends AbstractController
 
         return $response;
     }
+
+    #[Route('/api/auth/logout', name: 'app_auth_logout', methods: ['POST'])]
+    public function logout(): JsonResponse
+    {
+        $response = new JsonResponse(null, 204);
+
+        $response->headers->setCookie(
+            Cookie::create('refresh_token')
+                ->withValue(null)
+                ->withSameSite('lax')
+                ->withPath('/api/token/refresh')
+                ->withExpires(new \DateTimeImmutable('-1 days'))
+        );
+
+        return $response;
+    }
 }

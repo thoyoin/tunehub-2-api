@@ -27,7 +27,7 @@ class LibraryItemController extends AbstractController
         }
 
         return $this->json([
-            'libraryItems' => $handler(new GetLibraryItemsQuery($user->getId())),
+            'libraryItems' => $handler(new GetLibraryItemsQuery((int)$user->getId())),
         ]);
     }
 
