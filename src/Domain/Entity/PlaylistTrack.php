@@ -14,11 +14,11 @@ class PlaylistTrack
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Playlist::class, inversedBy: 'items')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Playlist $playlist;
 
     #[ORM\ManyToOne(targetEntity: Track::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Track $track;
 
     #[ORM\Column]

@@ -14,11 +14,11 @@ class Track
     private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'tracks')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $artist;
 
-    #[ORM\ManyToOne(inversedBy: 'tracks')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'tracks')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Release $release;
 
     #[ORM\Column(length: 255)]

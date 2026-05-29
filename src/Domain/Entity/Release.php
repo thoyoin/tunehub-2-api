@@ -21,7 +21,7 @@ class Release
     private int $id;
 
     #[ORM\ManyToOne(inversedBy: 'releases')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $artist;
 
     #[ORM\Column(length: 255)]
