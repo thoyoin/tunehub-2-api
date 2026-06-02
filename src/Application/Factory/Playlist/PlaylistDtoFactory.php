@@ -29,7 +29,7 @@ final readonly class PlaylistDtoFactory
             coverUrl: $playlist->getCoverUrl(),
             itemType: $playlist->getItemType(),
             duration: $playlist->getDuration(),
-            owner: $this->userDtoFactory->create($playlist->getOwner()),
+            user: $this->userDtoFactory->create($playlist->getOwner()),
             visibility: $playlist->getVisibility(),
             tracks: $this->createTrackDtos($playlist),
             createdAt: $playlist->getCreatedAt()

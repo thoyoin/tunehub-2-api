@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\Infrastructure\Controller;
 
 use App\Application\Command\Release\DeleteReleaseCommand;
-use App\Application\Command\Release\GetReleaseCommand;
 use App\Application\Command\Release\PublishReleaseCommand;
 use App\Application\Command\Release\UpdateReleaseCommand;
 use App\Application\Command\Release\UploadReleaseCommand;
 use App\Application\CommandHandler\Release\DeleteReleaseCommandHandler;
-use App\Application\CommandHandler\Release\GetReleaseCommandHandler;
 use App\Application\CommandHandler\Release\PublishReleaseCommandHandler;
 use App\Application\CommandHandler\Release\UpdateReleaseCommandHandler;
 use App\Application\CommandHandler\Release\UploadReleaseCommandHandler;
@@ -20,18 +18,15 @@ use App\Application\QueryHandler\Release\GetLatestReleasesQueryHandler;
 use App\Application\QueryHandler\Release\GetReleaseQueryHandler;
 use App\Domain\Entity\Release;
 use App\Domain\Entity\User;
-use App\Domain\ValueObject\ReleaseType;
 use App\Infrastructure\Request\Release\UpdateReleaseRequest;
 use App\Infrastructure\Request\Release\UploadReleaseRequest;
 use App\Infrastructure\Security\Voter\Release\ReleaseVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Attribute\MapUploadedFile;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ReleaseController extends AbstractController

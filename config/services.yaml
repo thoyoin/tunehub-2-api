@@ -30,3 +30,14 @@ services:
 
     getID3:
         class: getID3
+
+    App\Infrastructure\Client\ShopwareClient:
+        arguments:
+            $shopwareApiUrl: '%env(SHOPWARE_API_URL)%'
+            $clientId: '%env(SHOPWARE_ACCESS_KEY)%'
+            $clientSecret: '%env(SHOPWARE_SECRET_ACCESS_KEY)%'
+
+    App\Application\CommandHandler\Merch\UploadMerchCommandHandler:
+        arguments:
+            $defaultTaxId: '%env(SHOPWARE_TAX_ID)%'
+            $defaultEuroId: '%env(SHOPWARE_EUR_ID)%'
