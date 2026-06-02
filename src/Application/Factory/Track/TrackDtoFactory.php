@@ -23,7 +23,7 @@ readonly class TrackDtoFactory
         return new TrackDto(
             id: $track->getId(),
             title: $track->getTitle(),
-            artist: $this->userDtoFactory->create($track->getArtist()),
+            user: $this->userDtoFactory->create($track->getArtist()),
             release: $this->releasePreviewDtoFactory->create($track->getRelease()),
             coverUrl: $track->getCoverUrl(),
             duration: $track->getFormattedDuration(),

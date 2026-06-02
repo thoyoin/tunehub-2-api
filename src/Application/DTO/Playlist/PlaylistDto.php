@@ -22,7 +22,7 @@ final readonly class PlaylistDto
         private string $coverUrl,
         private string $itemType,
         private string $duration,
-        private UserDto $owner,
+        private UserDto $user,
         private PlaylistVisibility $visibility,
         private array $tracks,
         private DateTimeImmutable $createdAt,
@@ -64,9 +64,9 @@ final readonly class PlaylistDto
         return $this->duration;
     }
 
-    public function getOwner(): UserDto
+    public function getUser(): UserDto
     {
-        return $this->owner;
+        return $this->user;
     }
 
     public function getVisibility(): PlaylistVisibility

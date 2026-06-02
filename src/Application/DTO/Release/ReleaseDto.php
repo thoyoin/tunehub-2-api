@@ -18,7 +18,7 @@ final readonly class ReleaseDto
     public function __construct(
         private int $id,
         private string $title,
-        private UserPreviewDto $artist,
+        private UserPreviewDto $user,
         private ReleaseType $releaseType,
         private string $coverUrl,
         private string $duration,
@@ -38,9 +38,9 @@ final readonly class ReleaseDto
         return $this->title;
     }
 
-    public function getArtist(): UserPreviewDto
+    public function getUser(): UserPreviewDto
     {
-        return $this->artist;
+        return $this->user;
     }
 
     public function getReleaseType(): ReleaseType

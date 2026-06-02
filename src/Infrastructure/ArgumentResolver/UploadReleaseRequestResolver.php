@@ -21,7 +21,7 @@ final readonly class UploadReleaseRequestResolver implements ValueResolverInterf
     {}
 
     /**
-     * @return array<int, UploadReleaseRequest>
+     * @return iterable<int, UploadReleaseRequest>
      */
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
@@ -61,6 +61,6 @@ final readonly class UploadReleaseRequestResolver implements ValueResolverInterf
             throw new BadRequestHttpException((string) $errors);
         }
 
-        return [$uploadReleaseRequest];
+        yield $uploadReleaseRequest;
     }
 }

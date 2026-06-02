@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Application\QueryHandler\Release;
 
 use App\Application\DTO\Release\ReleasePreviewDto;
-use App\Application\Factory\Release\ReleaseDtoFactory;
 use App\Application\Factory\Release\ReleasePreviewDtoFactory;
+use App\Application\Query\Merch\GetArtistMerchQuery;
 use App\Application\Query\Release\GetArtistReleasesQuery;
 use App\Infrastructure\Repository\ReleaseRepository;
 

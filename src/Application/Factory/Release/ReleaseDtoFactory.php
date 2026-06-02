@@ -24,7 +24,7 @@ readonly class ReleaseDtoFactory
         return new ReleaseDto(
             id: $release->getId(),
             title: $release->getTitle(),
-            artist: $this->userDtoFactory->create($release->getArtist()),
+            user: $this->userDtoFactory->create($release->getArtist()),
             releaseType: $release->getReleaseType(),
             coverUrl: $release->getCoverUrl(),
             duration: $release->getDuration(),

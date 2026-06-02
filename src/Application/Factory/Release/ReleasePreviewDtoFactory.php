@@ -21,7 +21,7 @@ final readonly class ReleasePreviewDtoFactory
         return new ReleasePreviewDto(
             id: $release->getId(),
             title: $release->getTitle(),
-            artist: $this->dtoFactory->create($release->getArtist()),
+            user: $this->dtoFactory->create($release->getArtist()),
             releaseType: $release->getReleaseType(),
             releaseDate: Carbon::instance($release->getReleaseDate())->toFormattedDateString(),
             releaseDuration: $release->getDuration(),
