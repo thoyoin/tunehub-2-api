@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Controller;
 
+use App\Application\Command\CommandBusInterface;
 use App\Application\Command\Merch\DeleteMerchCommand;
 use App\Application\Command\Merch\UpdateMerchCommand;
 use App\Application\Command\Merch\UploadMerchCommand;
-use App\Application\CommandHandler\Merch\DeleteMerchCommandHandler;
-use App\Application\CommandHandler\Merch\UpdateMerchCommandHandler;
-use App\Application\CommandHandler\Merch\UploadMerchCommandHandler;
 use App\Application\DTO\Merch\MerchVariantDto;
 use App\Application\Query\Merch\GetArtistMerchQuery;
+use App\Application\Query\QueryBusInterface;
 use App\Application\Query\Release\GetArtistReleasesQuery;
 use App\Application\Query\Track\GetArtistTracksQuery;
-use App\Application\QueryHandler\Merch\GetArtistMerchQueryHandler;
-use App\Application\QueryHandler\Release\GetArtistReleasesQueryHandler;
-use App\Application\QueryHandler\Track\GetArtistTracksQueryHandler;
 use App\Domain\Entity\User;
 use App\Infrastructure\Request\Merch\UpdateMerchRequest;
 use App\Infrastructure\Request\Merch\UploadMerchRequest;
@@ -24,11 +20,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/artist')]
+#[Route('/api/artist-studio')]
 class ArtistStudioController extends AbstractController
 {
+    public function __construct(
+        private readonly QueryBusInterface $queryBus,
+        private readonly CommandBusInterface $commandBus,
+    )
+    {}
+
     #[Route('/tracks', name: 'api_artist_tracks', methods: ['GET'])]
-    public function getTracks(GetArtistTracksQueryHandler $handler): JsonResponse
+    public function getTracks(): JsonResponse
     {
         $user = $this->getUser();
 
@@ -37,12 +39,12 @@ class ArtistStudioController extends AbstractController
         }
 
         return $this->json([
-            'tracks' => $handler(new GetArtistTracksQuery($user)),
+            'tracks' => $this->queryBus->execute(new GetArtistTracksQuery($user)),
         ]);
     }
 
     #[Route('/releases', name: 'api_artist_releases', methods: ['GET'])]
-    public function getReleases(GetArtistReleasesQueryHandler $handler): JsonResponse
+    public function getReleases(): JsonResponse
     {
         $user = $this->getUser();
 
@@ -51,15 +53,12 @@ class ArtistStudioController extends AbstractController
         }
 
         return $this->json([
-            'releases' => $handler(new GetArtistReleasesQuery($user)),
+            'releases' => $this->queryBus->execute(new GetArtistReleasesQuery($user)),
         ]);
     }
 
     #[Route('/merch/upload', name: 'api_artist_upload_merch', methods: ['POST'])]
-    public function dropMerch(
-        UploadMerchRequest $request,
-        UploadMerchCommandHandler $handler,
-    ): JsonResponse
+    public function dropMerch(UploadMerchRequest $request): JsonResponse
     {
         $merchVariants = [];
 
@@ -74,11 +73,11 @@ class ArtistStudioController extends AbstractController
 
         $user = $this->getUser();
 
-        if (!$user instanceof User || $user->getId() === null) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
-        $handler(new UploadMerchCommand(
+        $this->commandBus->execute(new UploadMerchCommand(
             $user->getId(),
             $request->itemTitle,
             $request->itemDescription,
@@ -90,26 +89,21 @@ class ArtistStudioController extends AbstractController
     }
 
     #[Route('/merch', name: 'api_artist_get_merch', methods: ['GET'])]
-    public function getMerch(
-        GetArtistMerchQueryHandler $handler,
-    ): JsonResponse
+    public function getMerch(): JsonResponse
     {
         $user = $this->getUser();
 
-        if (!$user instanceof User || $user->getId() === null) {
+        if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
         return $this->json([
-            'merch' => $handler(new GetArtistMerchQuery($user->getId())),
+            'merch' => $this->queryBus->execute(new GetArtistMerchQuery($user->getId())),
         ]);
     }
 
     #[Route('/merch/{id}/update', name: 'api_artist_update_merch', methods: ['PUT'])]
-    public function updateMerch(
-        UpdateMerchRequest $request,
-        UpdateMerchCommandHandler $handler,
-    ): JsonResponse
+    public function updateMerch(UpdateMerchRequest $request): JsonResponse
     {
         $merchVariants = [];
 
@@ -126,7 +120,7 @@ class ArtistStudioController extends AbstractController
             }
         }
 
-        $handler(new UpdateMerchCommand(
+        $this->commandBus->execute(new UpdateMerchCommand(
             $request->id,
             $request->itemTitle,
             $request->itemDescription,
@@ -138,9 +132,9 @@ class ArtistStudioController extends AbstractController
     }
 
     #[Route('/merch/{id}/delete', name: 'api_artist_delete_merch', methods: ['DELETE'])]
-    public function deleteMerch(string $id, DeleteMerchCommandHandler $handler): JsonResponse
+    public function deleteMerch(string $id): JsonResponse
     {
-        $handler(new DeleteMerchCommand($id));
+        $this->commandBus->execute(new DeleteMerchCommand($id));
 
         return new JsonResponse(null, 204);
     }

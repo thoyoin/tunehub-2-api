@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Query\Merch;
 
 
-final readonly class GetArtistMerchQuery
+final readonly class GetArtistMerchQuery implements \App\Application\Query\QueryInterface
 {
     public function __construct(
         private int $userId,

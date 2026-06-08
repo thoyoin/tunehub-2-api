@@ -6,7 +6,7 @@ namespace App\Application\Command\Release;
 
 use App\Domain\Entity\Release;
 
-final readonly class PublishReleaseCommand
+final readonly class PublishReleaseCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         private Release $release,

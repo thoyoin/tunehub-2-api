@@ -11,8 +11,10 @@ use App\Infrastructure\Repository\UserRepository;
 use App\Infrastructure\Service\MinioService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+#[AsMessageHandler]
 readonly class UpdateUserCommandHandler
 {
     public function __construct(

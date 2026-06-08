@@ -7,7 +7,9 @@ namespace App\Application\CommandHandler\Merch;
 use App\Application\Command\Merch\UpdateMerchCommand;
 use App\Infrastructure\Client\ShopwareClient;
 use Symfony\Component\HttpClient\Exception\ClientException;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class UpdateMerchCommandHandler
 {
     public function __construct(

@@ -4,13 +4,14 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\Playlist;
 use App\Domain\Entity\User;
+use App\Domain\Repository\PlaylistRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Playlist>
  */
-class PlaylistRepository extends ServiceEntityRepository
+class PlaylistRepository extends ServiceEntityRepository implements PlaylistRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -46,5 +47,17 @@ class PlaylistRepository extends ServiceEntityRepository
         }
 
         return $stateMap;
+    }
+
+    public function delete(Playlist $playlist): void
+    {
+        $this->getEntityManager()->remove($playlist);
+        $this->getEntityManager()->flush();
+    }
+
+    public function save(Playlist $playlist): void
+    {
+        $this->getEntityManager()->persist($playlist);
+        $this->getEntityManager()->flush();
     }
 }

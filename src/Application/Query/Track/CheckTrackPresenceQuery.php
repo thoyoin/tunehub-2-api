@@ -6,7 +6,7 @@ namespace App\Application\Query\Track;
 
 use App\Domain\Entity\User;
 
-final readonly class CheckTrackPresenceQuery
+final readonly class CheckTrackPresenceQuery implements \App\Application\Query\QueryInterface
 {
     /**
      * @param array<int|string> $trackIds

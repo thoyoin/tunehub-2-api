@@ -2,9 +2,11 @@
 
 namespace App\Infrastructure\Controller;
 
+use App\Application\Command\CommandBusInterface;
 use App\Application\Command\User\CreateUserCommand;
-use App\Application\CommandHandler\User\CreateUserCommandHandler;
-use App\Application\CommandHandler\User\RefreshAuthTokenCommandHandler;
+use App\Application\Command\User\RefreshAuthTokenCommand;
+use App\Application\DTO\Auth\RefreshTokenDto;
+use App\Domain\Entity\User;
 use App\Infrastructure\Request\User\CreateUserRequest;
 use App\Infrastructure\Service\RefreshTokenService;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -18,19 +20,19 @@ use Symfony\Component\Routing\Attribute\Route;
 final class AuthController extends AbstractController
 {
     public function __construct(
-        public JWTTokenManagerInterface $jwtManager,
-        public RefreshTokenService $refreshTokenService,
+        private readonly JWTTokenManagerInterface $jwtManager,
+        private readonly RefreshTokenService $refreshTokenService,
+        private readonly CommandBusInterface $commandBus,
     )
     {}
 
     #[Route('/api/register', name: 'app_auth', methods: ['POST'])]
     public function signUp(
         #[MapRequestPayload] CreateUserRequest $request,
-        CreateUserCommandHandler $handler,
     ): JsonResponse
     {
         try {
-            $user = $handler->handle(new CreateUserCommand(
+            $user = $this->commandBus->execute(new CreateUserCommand(
                 $request->username,
                 $request->email,
                 $request->password,
@@ -40,6 +42,10 @@ final class AuthController extends AbstractController
             return $this->json([
                 'message' => $e->getMessage(),
             ], 422);
+        }
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
         }
 
         $token = $this->jwtManager->create($user);
@@ -65,10 +71,7 @@ final class AuthController extends AbstractController
     }
 
     #[Route('/api/token/refresh', name: 'app_auth_refresh', methods: ['POST'])]
-    public function refreshToken(
-        Request $request,
-        RefreshAuthTokenCommandHandler $handler,
-    ): JsonResponse
+    public function refreshToken(Request $request): JsonResponse
     {
         $refreshToken = $request->cookies->get('refresh_token');
 
@@ -77,14 +80,16 @@ final class AuthController extends AbstractController
         }
 
         try {
-            $result = $handler->handle($refreshToken);
+            $result = $this->commandBus->execute(new RefreshAuthTokenCommand($refreshToken));
         } catch (\Throwable) {
             return $this->json(['message' => 'Refresh token failed.'], 401);
         }
 
+        assert($result instanceof RefreshTokenDTO);
+
         $response = $this->json([
             'token' => $result->getAccessToken(),
-            'user' => $result->getUser()->jsonSerialize(),
+            'user' => $result->getUser(),
         ]);
 
         $response->headers->setCookie(

@@ -11,8 +11,10 @@ use App\Infrastructure\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+#[AsMessageHandler]
 final readonly class CreateUserCommandHandler
 {
     public function __construct(
@@ -25,7 +27,7 @@ final readonly class CreateUserCommandHandler
     )
     {}
 
-    public function handle(CreateUserCommand $command): User
+    public function __invoke(CreateUserCommand $command): User
     {
         $user = new User();
 

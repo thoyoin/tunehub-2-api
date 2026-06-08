@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Command\User;
 
 
-final readonly class CreateUserCommand
+final readonly class CreateUserCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         private string $username,

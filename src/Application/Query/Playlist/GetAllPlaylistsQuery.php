@@ -6,7 +6,7 @@ namespace App\Application\Query\Playlist;
 
 use App\Domain\Entity\User;
 
-final readonly class GetAllPlaylistsQuery
+final readonly class GetAllPlaylistsQuery implements \App\Application\Query\QueryInterface
 {
     public function __construct(
         private User $user,

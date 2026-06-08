@@ -7,12 +7,15 @@ namespace App\Application\QueryHandler\Release;
 use App\Application\DTO\Release\ReleasePreviewDto;
 use App\Application\Factory\Release\ReleasePreviewDtoFactory;
 use App\Application\Query\Release\GetLatestReleasesQuery;
+use App\Domain\Repository\ReleaseRepositoryInterface;
 use App\Infrastructure\Repository\ReleaseRepository;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 readonly class GetLatestReleasesQueryHandler
 {
     public function __construct(
-        private ReleaseRepository $releaseRepository,
+        private ReleaseRepositoryInterface $releaseRepository,
         private ReleasePreviewDtoFactory $dtoFactory,
     )
     {}

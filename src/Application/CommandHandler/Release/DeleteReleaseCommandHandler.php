@@ -6,7 +6,9 @@ namespace App\Application\CommandHandler\Release;
 
 use App\Application\Command\Release\DeleteReleaseCommand;
 use App\Infrastructure\Repository\ReleaseRepository;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class DeleteReleaseCommandHandler
 {
     public function __construct(

@@ -30,7 +30,7 @@ final readonly class CreateStarterPlaylistSubscriber implements EventSubscriberI
     public function onUserRegistered(UserRegisteredEvent $event): void
     {
         $this->messageBus->dispatch(new CreatePlaylistCommand(
-            (int)$event->getUser()->getId(),
+            $event->getUser()->getId(),
             'Liked Tracks',
         ));
     }

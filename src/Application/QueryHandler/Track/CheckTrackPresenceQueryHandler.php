@@ -6,7 +6,9 @@ namespace App\Application\QueryHandler\Track;
 
 use App\Application\Query\Track\CheckTrackPresenceQuery;
 use App\Infrastructure\Repository\PlaylistRepository;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class CheckTrackPresenceQueryHandler
 {
     public function __construct(

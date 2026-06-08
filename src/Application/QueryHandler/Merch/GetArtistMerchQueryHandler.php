@@ -9,7 +9,9 @@ use App\Application\Factory\Merch\MerchDtoFactory;
 use App\Application\Query\Merch\GetArtistMerchQuery;
 use App\Infrastructure\Client\ShopwareClient;
 use App\Infrastructure\Mapper\ShopwareMerchMapper;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class GetArtistMerchQueryHandler
 {
     public function __construct(

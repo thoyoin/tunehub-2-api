@@ -6,7 +6,7 @@ namespace App\Application\Query\Release;
 
 use App\Domain\Entity\User;
 
-class GetArtistReleasesQuery
+class GetArtistReleasesQuery implements \App\Application\Query\QueryInterface
 {
     public function __construct(
         public User $artist

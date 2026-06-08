@@ -7,7 +7,9 @@ namespace App\Application\QueryHandler\Release;
 use App\Application\DTO\Release\ReleaseDto;
 use App\Application\Factory\Release\ReleaseDtoFactory;
 use App\Application\Query\Release\GetReleaseQuery;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class GetReleaseQueryHandler
 {
     public function __construct(

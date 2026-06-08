@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Controller;
 
+use App\Application\Command\CommandBusInterface;
 use App\Application\Command\User\UpdateUserCommand;
-use App\Application\CommandHandler\User\UpdateUserCommandHandler;
 use App\Application\Factory\User\UserDtoFactory;
 use App\Domain\Entity\User;
 use App\Infrastructure\Request\User\UpdateUserRequest;
@@ -17,6 +17,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class UserController extends AbstractController
 {
+    public function __construct(
+        private readonly CommandBusInterface $commandBus,
+    )
+    {}
+
     #[Route('/api/me', name: 'app_user', methods: ['GET'])]
     public function me(
         UserDtoFactory $dtoFactory,
@@ -35,7 +40,6 @@ final class UserController extends AbstractController
 
     #[Route('/api/me/update', name: 'app_user_update', methods: ['POST'])]
     public function update(
-        UpdateUserCommandHandler $handler,
         #[MapRequestPayload] UpdateUserRequest $request,
         #[MapUploadedFile(
             constraints: [
@@ -58,8 +62,8 @@ final class UserController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $handler(new UpdateUserCommand(
-            (int)$user->getId(),
+        $this->commandBus->execute(new UpdateUserCommand(
+            $user->getId(),
             $request->username,
             $request->email,
             $profilePicture,

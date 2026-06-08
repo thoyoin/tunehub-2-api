@@ -7,7 +7,7 @@ namespace App\Application\Command\Merch;
 use App\Application\DTO\Merch\MerchVariantDto;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-final readonly class UploadMerchCommand
+final readonly class UploadMerchCommand implements \App\Application\Command\CommandInterface
 {
     /**
      * @param MerchVariantDto[] $merchVariants

@@ -232,4 +232,15 @@ class Playlist
 
         return sprintf('%2d min %02d sec', $minutes, $seconds);
     }
+
+    public function update(?string $title, ?string $description): void
+    {
+        if ($title !== null) {
+            $this->setTitle($title);
+        }
+
+        if ($description !== null) {
+            $this->setDescription($description);
+        }
+    }
 }

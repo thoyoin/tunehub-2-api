@@ -6,7 +6,7 @@ namespace App\Application\Query\Release;
 
 use App\Domain\Entity\Release;
 
-final readonly class GetReleaseQuery
+final readonly class GetReleaseQuery implements \App\Application\Query\QueryInterface
 {
     public function __construct(
         private Release $release

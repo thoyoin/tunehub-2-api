@@ -6,7 +6,7 @@ namespace App\Application\Query\Track;
 
 use App\Domain\Entity\User;
 
-class GetArtistTracksQuery
+class GetArtistTracksQuery implements \App\Application\Query\QueryInterface
 {
     public function __construct(
         public User $artist,
