@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Controller;
 
+use App\Application\Command\Merch\DeleteMerchCommand;
 use App\Application\Command\Merch\UpdateMerchCommand;
 use App\Application\Command\Merch\UploadMerchCommand;
+use App\Application\CommandHandler\Merch\DeleteMerchCommandHandler;
 use App\Application\CommandHandler\Merch\UpdateMerchCommandHandler;
 use App\Application\CommandHandler\Merch\UploadMerchCommandHandler;
 use App\Application\DTO\Merch\MerchVariantDto;
@@ -131,6 +133,14 @@ class ArtistStudioController extends AbstractController
             $request->images,
             $merchVariants,
         ));
+
+        return new JsonResponse(null, 204);
+    }
+
+    #[Route('/merch/{id}/delete', name: 'api_artist_delete_merch', methods: ['DELETE'])]
+    public function deleteMerch(string $id, DeleteMerchCommandHandler $handler): JsonResponse
+    {
+        $handler(new DeleteMerchCommand($id));
 
         return new JsonResponse(null, 204);
     }
