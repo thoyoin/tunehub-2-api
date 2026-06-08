@@ -38,7 +38,7 @@ class ReleaseRepository extends ServiceEntityRepository implements ReleaseReposi
     public function getArtistLatestPublished(int $artistId): ?Release
     {
         /**
-         * va
+         * @var Release|null $result
          */
         $result = $this->createQueryBuilder('r')
             ->where('r.status = :status')
@@ -61,7 +61,10 @@ class ReleaseRepository extends ServiceEntityRepository implements ReleaseReposi
 
     public function getByArtist(User $artist): array
     {
-        return $this->createQueryBuilder('r')
+        /**
+         * @var array<int, Release> $result
+         */
+        $result = $this->createQueryBuilder('r')
             ->where('r.status = :status')
             ->setParameter('status', 'published')
             ->andWhere('r.artist = :artistId')
@@ -69,5 +72,7 @@ class ReleaseRepository extends ServiceEntityRepository implements ReleaseReposi
             ->orderBy('r.releaseDate', 'DESC')
             ->getQuery()
             ->getResult();
+
+        return $result;
     }
 }
