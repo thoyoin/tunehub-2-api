@@ -7,7 +7,9 @@ namespace App\Application\CommandHandler\Release;
 use App\Application\Command\Release\PublishReleaseCommand;
 use App\Domain\ValueObject\ReleaseStatus;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class PublishReleaseCommandHandler
 {
     public function __construct(

@@ -13,8 +13,10 @@ use App\Infrastructure\Repository\UserRepository;
 use App\Infrastructure\Service\MinioService;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+#[AsMessageHandler]
 final readonly class UploadReleaseCommandHandler
 {
     public function __construct(

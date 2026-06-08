@@ -7,7 +7,7 @@ namespace App\Application\Command\Playlist;
 use App\Domain\Entity\Playlist;
 use App\Domain\ValueObject\PlaylistVisibility;
 
-final readonly class UpdatePlaylistVisibilityCommand
+final readonly class UpdatePlaylistVisibilityCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         private Playlist $playlist,

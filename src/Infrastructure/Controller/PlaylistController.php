@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Controller;
 
+use App\Application\Command\CommandBusInterface;
 use App\Application\Command\Playlist\AddTrackToPlaylistCommand;
 use App\Application\Command\Playlist\CreatePlaylistCommand;
 use App\Application\Command\Playlist\DeletePlaylistCommand;
 use App\Application\Command\Playlist\UpdatePlaylistCommand;
 use App\Application\Command\Playlist\UpdatePlaylistVisibilityCommand;
-use App\Application\CommandHandler\Playlist\AddTrackToPlaylistCommandHandler;
-use App\Application\CommandHandler\Playlist\CreatePlaylistCommandHandler;
-use App\Application\CommandHandler\Playlist\DeletePlaylistCommandHandler;
-use App\Application\CommandHandler\Playlist\UpdatePlaylistCommandHandler;
-use App\Application\CommandHandler\Playlist\UpdatePlaylistVisibilityCommandHandler;
 use App\Application\Query\Playlist\GetAllPlaylistsQuery;
 use App\Application\Query\Playlist\GetPlaylistQuery;
+use App\Application\Query\QueryBusInterface;
 use App\Application\Query\Track\CheckTrackPresenceQuery;
-use App\Application\QueryHandler\Playlist\GetAllPlaylistsQueryHandler;
-use App\Application\QueryHandler\Playlist\GetPlaylistQueryHandler;
-use App\Application\QueryHandler\Track\CheckTrackPresenceQueryHandler;
 use App\Domain\Entity\Playlist;
 use App\Domain\Entity\Track;
 use App\Domain\Entity\User;
@@ -39,8 +33,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PlaylistController extends AbstractController
 {
+    public function __construct(
+        private readonly CommandBusInterface $commandBus,
+        private readonly QueryBusInterface $queryBus,
+    )
+    {}
+
     #[Route('/api/playlist', name: 'playlist', methods: ['POST'])]
-    public function store(CreatePlaylistCommandHandler $handler): JsonResponse
+    public function store(): JsonResponse
     {
         $user = $this->getUser();
 
@@ -49,55 +49,49 @@ class PlaylistController extends AbstractController
         }
 
         return $this->json([
-            'libraryItem' => $handler(new CreatePlaylistCommand((int)$user->getId())),
+            'libraryItem' => $this->commandBus->execute(new CreatePlaylistCommand($user->getId())),
         ]);
     }
 
     #[Route('/api/playlist/{id}', name: 'playlist_show', methods: ['GET'])]
-    public function show(Playlist $playlist, GetPlaylistQueryHandler $handler): JsonResponse
+    public function show(Playlist $playlist): JsonResponse
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::VIEW, $playlist);
 
         return $this->json([
-            'playlistItem' => $handler(new GetPlaylistQuery($playlist))
+            'playlistItem' => $this->queryBus->execute(new GetPlaylistQuery($playlist))
         ]);
     }
 
     #[Route('/api/playlist/{id}', name: 'playlist_destroy', methods: ['DELETE'])]
-    public function destroy(Playlist $playlist, DeletePlaylistCommandHandler $handler): JsonResponse
+    public function destroy(Playlist $playlist): JsonResponse
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::DESTROY, $playlist);
 
-        $handler(new DeletePlaylistCommand($playlist));
+        $this->commandBus->execute(new DeletePlaylistCommand($playlist));
 
-        return $this->json([
-            'message' => 'Playlist successfully deleted'
-        ]);
+        return new JsonResponse(null, 204);
     }
 
     #[Route('/api/playlist/{id}', name: 'playlist_update_visibility', methods: ['PATCH'])]
     public function updateVisibility(
         Playlist $playlist,
-        UpdatePlaylistVisibilityCommandHandler $handler,
         #[MapRequestPayload] UpdatePlaylistVisibilityRequest $request,
     ): JsonResponse
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::EDIT, $playlist);
 
         return $this->json([
-            'visibility' => $handler(
-                new UpdatePlaylistVisibilityCommand(
-                    $playlist,
-                    PlaylistVisibility::from($request->visibility),
-                )
-            ),
+            'visibility' => $this->commandBus->execute(new UpdatePlaylistVisibilityCommand(
+                $playlist,
+                PlaylistVisibility::from($request->visibility),
+            ))
         ]);
     }
 
     #[Route('/api/playlist/{id}', name: 'playlist_update', methods: ['POST'])]
     public function update(
         Playlist $playlist,
-        UpdatePlaylistCommandHandler $handler,
         #[MapRequestPayload] UpdatePlaylistRequest $request,
         #[MapUploadedFile(
             new Assert\File(
@@ -109,7 +103,7 @@ class PlaylistController extends AbstractController
     {
         $this->denyAccessUnlessGranted(PlaylistVoter::EDIT, $playlist);
 
-        $handler(new UpdatePlaylistCommand(
+        $this->commandBus->execute(new UpdatePlaylistCommand(
             $playlist,
             $request->title,
             $request->description,
@@ -120,7 +114,7 @@ class PlaylistController extends AbstractController
     }
 
     #[Route('/api/playlists', name: 'user_playlists', methods: ['GET'])]
-    public function getAll(GetAllPlaylistsQueryHandler $handler): JsonResponse
+    public function getAll(): JsonResponse
     {
         $user = $this->getUser();
 
@@ -129,7 +123,7 @@ class PlaylistController extends AbstractController
         }
 
         return $this->json([
-            'playlists' => $handler(new GetAllPlaylistsQuery($user)),
+            'playlists' => $this->queryBus->execute(new GetAllPlaylistsQuery($user)),
         ]);
     }
 
@@ -137,18 +131,16 @@ class PlaylistController extends AbstractController
     public function addTrack(
         Playlist $playlist,
         Track $track,
-        AddTrackToPlaylistCommandHandler $handler
     ): JsonResponse
     {
-        $handler(new AddTrackToPlaylistCommand($playlist, $track));
+        $this->commandBus->execute(new AddTrackToPlaylistCommand($playlist, $track));
 
         return new JsonResponse(null, 204);
     }
 
     #[Route('/api/playlists/contain-tracks', name: 'playlist_contains_tracks', methods: ['GET'])]
     public function checkTracksInPlaylist(
-        #[MapQueryString] CheckTracksInPlaylistRequest $request,
-        CheckTrackPresenceQueryHandler $handler
+        #[MapQueryString] CheckTracksInPlaylistRequest $request
     ): JsonResponse
     {
         $user = $this->getUser();
@@ -160,7 +152,7 @@ class PlaylistController extends AbstractController
         $trackIds = explode(',', $request->track_ids);
 
         return $this->json([
-            'trackPlaylistMap' => $handler(new CheckTrackPresenceQuery($user, $trackIds))
+            'trackPlaylistMap' => $this->queryBus->execute(new CheckTrackPresenceQuery($user, $trackIds))
         ]);
     }
 }

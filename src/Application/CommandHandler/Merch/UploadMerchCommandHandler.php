@@ -6,7 +6,9 @@ namespace App\Application\CommandHandler\Merch;
 
 use App\Application\Command\Merch\UploadMerchCommand;
 use App\Infrastructure\Client\ShopwareClient;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class UploadMerchCommandHandler
 {
     public function __construct(

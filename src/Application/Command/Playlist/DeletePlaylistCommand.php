@@ -6,10 +6,15 @@ namespace App\Application\Command\Playlist;
 
 use App\Domain\Entity\Playlist;
 
-class DeletePlaylistCommand
+final readonly class DeletePlaylistCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
-        public Playlist $playlist,
+        private Playlist $playlist,
     )
     {}
+
+    public function getPlaylist(): Playlist
+    {
+        return $this->playlist;
+    }
 }

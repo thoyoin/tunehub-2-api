@@ -7,15 +7,15 @@ namespace App\Application\DTO\User;
 final readonly class UserPreviewDto
 {
     public function __construct(
-        private int $userId,
+        private int $id,
         private string $username,
         private string $profilePicture,
     )
     {}
 
-    public function getUserId(): int
+    public function getId(): int
     {
-        return $this->userId;
+        return $this->id;
     }
 
     public function getUsername(): string

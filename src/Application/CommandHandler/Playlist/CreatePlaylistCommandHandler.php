@@ -10,6 +10,7 @@ use App\Application\Factory\LibraryItem\LibraryItemDtoFactory;
 use App\Application\Factory\LibraryItem\LibraryItemFactory;
 use App\Domain\Entity\Playlist;
 use App\Domain\Entity\User;
+use App\Domain\Repository\UserRepositoryInterface;
 use App\Infrastructure\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -22,7 +23,7 @@ final readonly class CreatePlaylistCommandHandler
         #[Autowire('%media.default_cover%')]
         private string $defaultCover,
         private EntityManagerInterface $entityManager,
-        private UserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private LibraryItemFactory $libraryItemFactory,
         private LibraryItemDtoFactory $libraryItemDtoFactory,
     )
@@ -32,11 +33,7 @@ final readonly class CreatePlaylistCommandHandler
     {
         $playlist = new Playlist();
 
-        $user = $this->userRepository->find($command->userId);
-
-        if (!$user instanceof User) {
-            throw new \DomainException('User not found');
-        }
+        $user = $this->userRepository->getOneById($command->userId);
 
         $playlist->setOwner($user);
         $playlist->setTitle($command->title);

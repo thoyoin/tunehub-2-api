@@ -7,7 +7,9 @@ namespace App\Application\QueryHandler\Playlist;
 use App\Application\DTO\Playlist\PlaylistDto;
 use App\Application\Factory\Playlist\PlaylistDtoFactory;
 use App\Application\Query\Playlist\GetPlaylistQuery;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class GetPlaylistQueryHandler
 {
     public function __construct(

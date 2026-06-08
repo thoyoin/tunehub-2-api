@@ -9,8 +9,10 @@ use App\Application\Command\Release\UpdateReleaseCommand;
 use App\Infrastructure\Service\MinioService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+#[AsMessageHandler]
 final readonly class UpdateReleaseCommandHandler
 {
     public function __construct(

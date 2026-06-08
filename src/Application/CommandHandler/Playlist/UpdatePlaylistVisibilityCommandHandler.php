@@ -7,7 +7,9 @@ namespace App\Application\CommandHandler\Playlist;
 use App\Application\Command\Playlist\UpdatePlaylistVisibilityCommand;
 use App\Domain\ValueObject\PlaylistVisibility;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class UpdatePlaylistVisibilityCommandHandler
 {
     public function __construct(

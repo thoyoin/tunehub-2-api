@@ -6,7 +6,7 @@ namespace App\Application\Command\User;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-final readonly class UpdateUserCommand
+final readonly class UpdateUserCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         private int $id,

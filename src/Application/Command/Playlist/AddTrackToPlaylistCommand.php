@@ -7,7 +7,7 @@ namespace App\Application\Command\Playlist;
 use App\Domain\Entity\Playlist;
 use App\Domain\Entity\Track;
 
-final readonly class AddTrackToPlaylistCommand
+final readonly class AddTrackToPlaylistCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         private Playlist $playlist,

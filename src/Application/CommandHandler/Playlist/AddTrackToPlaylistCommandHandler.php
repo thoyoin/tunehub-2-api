@@ -6,7 +6,9 @@ namespace App\Application\CommandHandler\Playlist;
 
 use App\Application\Command\Playlist\AddTrackToPlaylistCommand;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class AddTrackToPlaylistCommandHandler
 {
     public function __construct(

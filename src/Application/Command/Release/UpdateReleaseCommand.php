@@ -8,7 +8,7 @@ use App\Domain\Entity\Release;
 use App\Domain\Entity\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-final readonly class UpdateReleaseCommand
+final readonly class UpdateReleaseCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         private Release $release,

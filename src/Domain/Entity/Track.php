@@ -28,10 +28,10 @@ class Track
     private int $duration;
 
     #[ORM\Column(length: 255)]
-    private string $audio_url;
+    private string $audioUrl;
 
     #[ORM\Column(type: 'date_immutable')]
-    private \DateTimeImmutable $release_date;
+    private \DateTimeImmutable $releaseDate;
 
     #[ORM\Column]
     private int $position;
@@ -99,24 +99,24 @@ class Track
 
     public function getAudioUrl(): string
     {
-        return $this->audio_url;
+        return $this->audioUrl;
     }
 
-    public function setAudioUrl(string $audio_url): static
+    public function setAudioUrl(string $audioUrl): static
     {
-        $this->audio_url = $audio_url;
+        $this->audioUrl = $audioUrl;
 
         return $this;
     }
 
     public function getReleaseDate(): \DateTimeImmutable
     {
-        return $this->release_date;
+        return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTimeImmutable $release_date): static
+    public function setReleaseDate(\DateTimeImmutable $releaseDate): static
     {
-        $this->release_date = $release_date;
+        $this->releaseDate = $releaseDate;
 
         return $this;
     }

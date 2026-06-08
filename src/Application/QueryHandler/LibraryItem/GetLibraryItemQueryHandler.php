@@ -7,7 +7,9 @@ namespace App\Application\QueryHandler\LibraryItem;
 use App\Application\DTO\LibraryItem\LibraryItemDto;
 use App\Application\Factory\LibraryItem\LibraryItemDtoFactory;
 use App\Application\Query\LibraryItem\GetLibraryItemQuery;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 readonly class GetLibraryItemQueryHandler
 {
     public function __construct(

@@ -6,7 +6,7 @@ namespace App\Application\Command\Release;
 
 use App\Domain\Entity\Release;
 
-final readonly class DeleteReleaseCommand
+final readonly class DeleteReleaseCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         private Release $release,

@@ -8,7 +8,7 @@ use App\Domain\ValueObject\ReleaseType;
 use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-final readonly class UploadReleaseCommand
+final readonly class UploadReleaseCommand implements \App\Application\Command\CommandInterface
 {
     /**
      * @param string[] $titles

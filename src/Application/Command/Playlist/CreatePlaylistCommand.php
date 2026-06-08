@@ -6,7 +6,7 @@ namespace App\Application\Command\Playlist;
 
 use App\Domain\ValueObject\PlaylistVisibility;
 
-class CreatePlaylistCommand
+class CreatePlaylistCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         public int $userId,

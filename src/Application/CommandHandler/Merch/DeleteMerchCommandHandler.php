@@ -6,7 +6,9 @@ namespace App\Application\CommandHandler\Merch;
 
 use App\Application\Command\Merch\DeleteMerchCommand;
 use App\Infrastructure\Client\ShopwareClient;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class DeleteMerchCommandHandler
 {
     public function __construct(

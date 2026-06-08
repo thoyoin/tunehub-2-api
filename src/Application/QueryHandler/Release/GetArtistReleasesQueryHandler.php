@@ -8,12 +8,15 @@ use App\Application\DTO\Release\ReleasePreviewDto;
 use App\Application\Factory\Release\ReleasePreviewDtoFactory;
 use App\Application\Query\Merch\GetArtistMerchQuery;
 use App\Application\Query\Release\GetArtistReleasesQuery;
+use App\Domain\Repository\ReleaseRepositoryInterface;
 use App\Infrastructure\Repository\ReleaseRepository;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class GetArtistReleasesQueryHandler
 {
     public function __construct(
-        private ReleaseRepository $releaseRepository,
+        private ReleaseRepositoryInterface $releaseRepository,
         private ReleasePreviewDtoFactory $dtoFactory,
     )
     {}
@@ -23,7 +26,7 @@ final readonly class GetArtistReleasesQueryHandler
      */
     public function __invoke(GetArtistReleasesQuery $query): array
     {
-        $releases = $this->releaseRepository->findBy(['artist' => $query->artist]);
+        $releases = $this->releaseRepository->getByArtist($query->artist);
 
         if ($releases === []) {
             return [];

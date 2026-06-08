@@ -8,7 +8,9 @@ use App\Application\DTO\Track\TrackDto;
 use App\Application\Factory\Track\TrackDtoFactory;
 use App\Application\Query\Track\GetArtistTracksQuery;
 use App\Infrastructure\Repository\TrackRepository;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[AsMessageHandler]
 final readonly class GetArtistTracksQueryHandler
 {
     public function __construct(

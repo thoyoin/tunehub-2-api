@@ -7,7 +7,7 @@ namespace App\Application\Command\Playlist;
 use App\Domain\Entity\Playlist;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-final readonly class UpdatePlaylistCommand
+final readonly class UpdatePlaylistCommand implements \App\Application\Command\CommandInterface
 {
     public function __construct(
         private Playlist $playlist,
