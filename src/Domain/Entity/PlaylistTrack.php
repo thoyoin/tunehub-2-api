@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entity;
 
-use App\Repository\PlaylistTrackRepository;
+use App\Infrastructure\Repository\PlaylistTrackRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PlaylistTrackRepository::class)]

@@ -6,24 +6,21 @@ namespace App\Infrastructure\Request\Merch;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class MerchVariantRequest
+class UpdateMerchVariantRequest
 {
     public function __construct(
-        #[Assert\NotBlank]
         #[Assert\Length(max: 55)]
-        public string $variantName,
+        public ?string $variantName,
 
-        #[Assert\NotBlank]
         #[Assert\Type(type: 'numeric')]
         #[Assert\GreaterThanOrEqual(value: 0.01)]
-        public float|int $price,
+        public ?int $price,
 
-        #[Assert\NotBlank]
         #[Assert\Type(type: 'integer')]
         #[Assert\GreaterThanOrEqual(value: 0)]
-        public int $stock,
+        public ?int $stock,
 
-        public ?string $id = null,
+        public ?string $id,
     )
     {}
 }
