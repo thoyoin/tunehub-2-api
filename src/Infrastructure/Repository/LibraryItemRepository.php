@@ -3,13 +3,14 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\LibraryItem;
+use App\Domain\Repository\LibraryItemRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<LibraryItem>
  */
-class LibraryItemRepository extends ServiceEntityRepository
+class LibraryItemRepository extends ServiceEntityRepository implements LibraryItemRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
