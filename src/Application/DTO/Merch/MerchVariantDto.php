@@ -7,23 +7,29 @@ namespace App\Application\DTO\Merch;
 final readonly class MerchVariantDto
 {
     public function __construct(
-        private string $variantName,
-        private float $price,
-        private int $stock
+        private ?string $id,
+        private ?string $title,
+        private ?float $price,
+        private ?int $stock
     )
     {}
 
-    public function getVariantName() : string
+    public function getId(): ?string
     {
-        return $this->variantName;
+        return $this->id;
     }
 
-    public function getPrice() : float
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function getStock() : int
+    public function getStock(): ?int
     {
         return $this->stock;
     }

@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 namespace App\Application\QueryHandler\Merch;
 
+use App\Application\DTO\Merch\MerchDto;
+use App\Application\Factory\Merch\MerchDtoFactory;
 use App\Application\Query\Merch\GetArtistMerchQuery;
 use App\Infrastructure\Client\ShopwareClient;
+use App\Infrastructure\Mapper\ShopwareMerchMapper;
 
 final readonly class GetArtistMerchQueryHandler
 {
     public function __construct(
         private ShopwareClient $shopwareClient,
+        private MerchDtoFactory $dtoFactory,
+        private ShopwareMerchMapper $mapper,
     )
     {}
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @return array<int, MerchDto>
      */
     public function __invoke(GetArtistMerchQuery $query): array
     {
@@ -44,6 +49,8 @@ final readonly class GetArtistMerchQueryHandler
          */
         $data = $result['data'] ?? [];
 
-        return $data;
+        $mappedData = $this->mapper->mapCollection($data);
+
+        return $this->dtoFactory->create($mappedData);
     }
 }

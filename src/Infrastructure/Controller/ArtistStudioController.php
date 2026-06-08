@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Controller;
 
+use App\Application\Command\Merch\UpdateMerchCommand;
 use App\Application\Command\Merch\UploadMerchCommand;
+use App\Application\CommandHandler\Merch\UpdateMerchCommandHandler;
 use App\Application\CommandHandler\Merch\UploadMerchCommandHandler;
 use App\Application\DTO\Merch\MerchVariantDto;
 use App\Application\Query\Merch\GetArtistMerchQuery;
@@ -14,6 +16,7 @@ use App\Application\QueryHandler\Merch\GetArtistMerchQueryHandler;
 use App\Application\QueryHandler\Release\GetArtistReleasesQueryHandler;
 use App\Application\QueryHandler\Track\GetArtistTracksQueryHandler;
 use App\Domain\Entity\User;
+use App\Infrastructure\Request\Merch\UpdateMerchRequest;
 use App\Infrastructure\Request\Merch\UploadMerchRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -60,6 +63,7 @@ class ArtistStudioController extends AbstractController
 
         foreach($request->merchVariants as $variantRequest) {
             $merchVariants[] = new MerchVariantDto(
+                bin2hex(random_bytes(16)),
                 $variantRequest->variantName,
                 $variantRequest->price,
                 $variantRequest->stock,
@@ -97,5 +101,37 @@ class ArtistStudioController extends AbstractController
         return $this->json([
             'merch' => $handler(new GetArtistMerchQuery($user->getId())),
         ]);
+    }
+
+    #[Route('/merch/{id}/update', name: 'api_artist_update_merch', methods: ['PUT'])]
+    public function updateMerch(
+        UpdateMerchRequest $request,
+        UpdateMerchCommandHandler $handler,
+    ): JsonResponse
+    {
+        $merchVariants = [];
+
+        $variants = $request->merchVariants;
+
+        if ($variants !== null) {
+            foreach($variants as $variant) {
+                $merchVariants[] = new MerchVariantDto(
+                    $variant->id,
+                    $variant->variantName,
+                    $variant->price,
+                    $variant->stock,
+                );
+            }
+        }
+
+        $handler(new UpdateMerchCommand(
+            $request->id,
+            $request->itemTitle,
+            $request->itemDescription,
+            $request->images,
+            $merchVariants,
+        ));
+
+        return new JsonResponse(null, 204);
     }
 }

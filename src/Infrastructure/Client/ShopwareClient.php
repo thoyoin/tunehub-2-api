@@ -20,8 +20,12 @@ readonly class ShopwareClient
     ) {}
 
     /**
-     * @param array{headers?: array<string, string>, json?: array<mixed>} $options
-     * @return array<mixed>
+     * @param array{
+     *   headers?: array<string, string>,
+     *   json?: array<string, mixed>
+     * } $options
+     *
+     * @return array<string, mixed>
      */
     public function request(string $method, string $endpoint, array $options = []): array
     {
@@ -39,7 +43,10 @@ readonly class ShopwareClient
             return [];
         }
 
-        return $response->toArray();
+        /** @var array<string, mixed> $data */
+        $data = $response->toArray();
+
+        return $data;
     }
 
     private function getAccessToken(): string
@@ -55,6 +62,7 @@ readonly class ShopwareClient
                 ]
             ]);
 
+            /** @var array<string, mixed> $data */
             $data = $response->toArray();
 
             $item->expiresAfter(540);

@@ -6,7 +6,6 @@ namespace App\Application\CommandHandler\Merch;
 
 use App\Application\Command\Merch\UploadMerchCommand;
 use App\Infrastructure\Client\ShopwareClient;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
 
 final readonly class UploadMerchCommandHandler
 {
@@ -19,7 +18,7 @@ final readonly class UploadMerchCommandHandler
 
     public function __invoke(UploadMerchCommand $command): void
     {
-        $baseSku = 'MERCH-' . strtoupper(substr(hash(Sha256::class, random_bytes(8)), 0, 8));
+        $baseSku = 'MERCH-' . strtoupper(substr(hash('sha256', random_bytes(8)), 0, 8));
 
         $parentProductId = bin2hex(random_bytes(16));
 
@@ -50,13 +49,13 @@ final readonly class UploadMerchCommandHandler
                 'json' => [
                     'id' => $variantProductId,
                     'parentId' => $parentProductId,
-                    'name' => $variantData->getVariantName(),
+                    'name' => $variantData->getTitle(),
                     'productNumber' => $baseSku . '-' . ($index + 1),
                     'stock' => $variantData->getStock(),
                     'price' => [[
                         'currencyId' => $this->defaultEuroId,
                         'gross' => $variantData->getPrice(),
-                        'net' => $variantData->getPrice() / 1.19,
+                        'net' => ($variantData->getPrice() ?? 0.0) / 1.19,
                         'linked' => true
                     ]]
                 ]

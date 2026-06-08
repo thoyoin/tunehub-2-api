@@ -41,3 +41,7 @@ services:
         arguments:
             $defaultTaxId: '%env(SHOPWARE_TAX_ID)%'
             $defaultEuroId: '%env(SHOPWARE_EUR_ID)%'
+
+    App\Application\CommandHandler\Merch\UpdateMerchCommandHandler:
+        arguments:
+            $defaultEuroId: '%env(SHOPWARE_EUR_ID)%'
